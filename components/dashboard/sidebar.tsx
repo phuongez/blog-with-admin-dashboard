@@ -40,7 +40,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
     <div className="h-full px-4 py-6">
       <div className="flex items-center gap-2 mb-8 px-2">
         <Link href={"/"}>
-          <span className="text-xl font-bold">ByteCode</span>
+          <span className="text-xl font-bold">Nutrition Blog</span>
         </Link>
       </div>
       <nav className="space-y-1">

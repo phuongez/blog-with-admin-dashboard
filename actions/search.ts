@@ -8,5 +8,6 @@ export const searchAction = async (formData: FormData) => {
     redirect("/");
   }
 
-  redirect(`/articles?search=${searchText}`);
+  const encoded = encodeURIComponent(searchText);
+  redirect(`/articles?search=${encoded}`);
 };

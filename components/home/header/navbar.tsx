@@ -22,9 +22,9 @@ export function Navbar() {
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-2xl font-bold">
                 <span className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                  Byte
+                  Nutrition
                 </span>
-                <span className="text-foreground">Code</span>
+                <span className="text-foreground">Blog</span>
               </span>
             </Link>
 
