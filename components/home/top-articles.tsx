@@ -54,10 +54,10 @@ export async function TopArticles() {
           <div className="p-6">
             <Link
               href={`/articles/${article.slug}`}
-              className="flex items-center gap-8"
+              className="flex flex-col lg:flex-row items-center gap-8"
             >
               {/* Image Container */}
-              <div className="relative mb-4 w-[50%] aspect-[4/3] overflow-hidden rounded-xl">
+              <div className="relative mb-4 w-full lg:w-[50%] aspect-[4/3] overflow-hidden rounded-xl">
                 <Image
                   src={article.featuredImage as string}
                   alt={article.title}
@@ -65,7 +65,7 @@ export async function TopArticles() {
                   className="object-cover"
                 />
               </div>
-              <div className="w-[50%]">
+              <div className="w-full lg:w-[50%]">
                 {/* Author Info */}
                 <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                   <Avatar className="h-8 w-8">

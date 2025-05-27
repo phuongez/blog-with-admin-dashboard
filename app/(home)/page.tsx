@@ -1,5 +1,6 @@
 import BlogFooter from "@/components/home/blog-footer";
 import { Navbar } from "@/components/home/header/navbar";
+import SearchInput from "@/components/home/header/search-input";
 import HeroSection from "@/components/home/hero-section";
 import RightMenu from "@/components/home/RightMenu";
 import { TopArticles } from "@/components/home/top-articles";
@@ -42,6 +43,9 @@ const page = async () => {
           Khác
         </Link>
       </div>
+      <div className="md:hidden px-8 sm:px-36 mb-4">
+        <SearchInput />
+      </div>
       <section className="relative px-4 md:px-24 xl:px-32 py-4 lg:py-24 flex gap-16">
         <div className="container mx-auto px-4">
           <div className="mb-12">
@@ -57,7 +61,7 @@ const page = async () => {
 
           <div className="mt-12 text-center">
             <Link href={"/articles"}>
-              <Button className="rounded-full px-8 py-6 text-lg hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900">
+              <Button className="rounded-md px-8 py-6 text-lg hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900">
                 Xem Tất Cả Bài Viết
               </Button>
             </Link>

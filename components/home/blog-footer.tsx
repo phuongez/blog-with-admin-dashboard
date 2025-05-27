@@ -7,7 +7,7 @@ export default function BlogFooter() {
   return (
     <footer className="border-t bg-background">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 ">
           {/* Branding Section */}
           <div className="md:col-span-2 lg:col-span-2">
             <h2 className="text-2xl font-bold">
@@ -37,14 +37,14 @@ export default function BlogFooter() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Explore</h3>
+            <h3 className="text-lg font-semibold text-foreground">Khám phá</h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  All Articles
+                  Tất cả bài viết
                 </a>
               </li>
               <li>
@@ -52,7 +52,7 @@ export default function BlogFooter() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Topics
+                  Chủ đề
                 </a>
               </li>
               <li>
@@ -60,7 +60,7 @@ export default function BlogFooter() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Authors
+                  Các tác giả
                 </a>
               </li>
               <li>
@@ -76,14 +76,14 @@ export default function BlogFooter() {
 
           {/* Legal */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Legal</h3>
+            <h3 className="text-lg font-semibold text-foreground">Pháp lý</h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Privacy Policy
+                  Chính sách bảo mật
                 </a>
               </li>
               <li>
@@ -91,7 +91,7 @@ export default function BlogFooter() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Terms of Service
+                  Điều khoản sử dụng
                 </a>
               </li>
               <li>
@@ -99,7 +99,7 @@ export default function BlogFooter() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Cookie Policy
+                  Chính sách cookie
                 </a>
               </li>
               <li>
@@ -107,7 +107,7 @@ export default function BlogFooter() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Licenses
+                  Bản quyền
                 </a>
               </li>
             </ul>
@@ -116,7 +116,7 @@ export default function BlogFooter() {
           {/* Newsletter */}
           <div className="space-y-4 md:col-span-2 lg:col-span-2">
             <h3 className="text-lg font-semibold text-foreground">
-              Stay Updated
+              Đăng kí thông tin
             </h3>
             <form className="flex flex-col gap-4">
               <div className="relative">
@@ -128,7 +128,7 @@ export default function BlogFooter() {
                 <Mail className="h-5 w-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
               <Button type="submit" className="w-full">
-                Subscribe
+                Đăng kí
               </Button>
             </form>
           </div>

@@ -17,7 +17,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex grow h-16 items-center justify-between">
           {/* Left Section - Logo & Desktop Navigation */}
-          <div className="flex grow items-center justify-between gap-8 ">
+          <div className="flex grow items-center justify-between sm:gap-8 ">
             {/* Logo */}
             <Link href="/" className="flex flex-1 items-center space-x-2">
               <span className="text-2xl font-bold">
@@ -28,12 +28,12 @@ export function Navbar() {
               </span>
             </Link>
             {/* Search Bar (Desktop) */}
-            <div className="flex-1">
+            <div className="hidden md:block flex-1">
               <SearchInput />
             </div>
 
             {/* Right Section - Search & Actions */}
-            <div className="flex flex-1 justify-end items-center gap-4">
+            <div className="flex flex-1 justify-end items-center sm:gap-4">
               {/* <Link
                 href="/articles"
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -48,12 +48,12 @@ export function Navbar() {
                 <UserButton afterSignOutUrl="/" />
               </SignedIn>
               <SignedOut>
-                <div className="hidden md:flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   <SignInButton>
-                    <Button variant="outline">Login</Button>
+                    <Button variant="outline">Đăng nhập</Button>
                   </SignInButton>
                   <SignUpButton>
-                    <Button>Sign up</Button>
+                    <Button>Đăng kí</Button>
                   </SignUpButton>
                 </div>
               </SignedOut>
