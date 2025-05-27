@@ -48,21 +48,40 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
 
   const isLiked = likes.some((like) => like.userId === user?.id);
 
+  function slugToCategory(slug: string): string {
+    const map: Record<string, string> = {
+      dinhduong: "Dinh dưỡng",
+      luyentap: "Luyện tập",
+      loisong: "Lối sống",
+      khac: "Khác",
+    };
+
+    return map[slug] ?? slug;
+  }
+
+  // Tính thời gian đọc
+  function getReadingTime(text: string): number {
+    const wordsPerMinute = 200;
+    const numberOfWords = text.trim().split(/\s+/).length;
+    const minutes = Math.ceil(numberOfWords / wordsPerMinute);
+    return minutes;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Reuse your existing Navbar */}
 
-      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 ">
         <article className="mx-auto max-w-3xl">
           {/* Article Header */}
           <header className="mb-12">
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-                {article.category}
+                {slugToCategory(article.category)}
               </span>
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4 leading-[1.5]">
               {article.title}
             </h1>
 
@@ -76,7 +95,14 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
                   {article.author.name}
                 </p>
                 <p className="text-sm">
-                  {article.createdAt.toDateString()} · {12} min read
+                  {new Date(article.createdAt).toLocaleString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                  · {getReadingTime(article.content)} phút đọc
                 </p>
               </div>
             </div>

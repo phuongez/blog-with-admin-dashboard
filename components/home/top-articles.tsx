@@ -22,6 +22,24 @@ export async function TopArticles() {
     },
   });
 
+  function slugToCategory(slug: string): string {
+    const map: Record<string, string> = {
+      dinhduong: "Dinh dưỡng",
+      luyentap: "Luyện tập",
+      loisong: "Lối sống",
+      khac: "Khác",
+    };
+
+    return map[slug] ?? slug;
+  }
+
+  function getReadingTime(text: string): number {
+    const wordsPerMinute = 200;
+    const numberOfWords = text.trim().split(/\s+/).length;
+    const minutes = Math.ceil(numberOfWords / wordsPerMinute);
+    return minutes;
+  }
+
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {articles.slice(0, 3).map((article) => (
@@ -57,17 +75,25 @@ export async function TopArticles() {
               </div>
 
               {/* Article Title */}
-              <h3 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white min-h-16">
                 {article.title}
               </h3>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">
-                {article.category}
+              <p className="mt-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary w-fit">
+                {slugToCategory(article.category)}
               </p>
 
               {/* Article Meta Info */}
               <div className="mt-6 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                <span>{new Date(article.createdAt).toDateString()}</span>
-                <span>{12} min read</span>
+                <span>
+                  {new Date(article.createdAt).toLocaleString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+                <span>{getReadingTime(article.content)} phút đọc</span>
               </div>
             </Link>
           </div>

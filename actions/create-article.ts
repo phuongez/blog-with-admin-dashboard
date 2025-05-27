@@ -14,6 +14,7 @@ cloudinary.config({
 
 const createArticleSchema = z.object({
   title: z.string().min(3).max(100),
+  subtitle: z.string().min(3),
   category: z.string().min(3).max(50),
   content: z.string().min(10),
 });
@@ -21,6 +22,7 @@ const createArticleSchema = z.object({
 type CreateArticleFormState = {
   errors: {
     title?: string[];
+    subtitle?: string[];
     category?: string[];
     featuredImage?: string[];
     content?: string[];
@@ -34,6 +36,7 @@ export const createArticles = async (
 ): Promise<CreateArticleFormState> => {
   const result = createArticleSchema.safeParse({
     title: formData.get("title"),
+    subtitle: formData.get("subtitle"),
     category: formData.get("category"),
     content: formData.get("content"),
   });
@@ -115,6 +118,7 @@ export const createArticles = async (
     await prisma.articles.create({
       data: {
         title: result.data.title,
+        subtitle: result.data.subtitle,
         category: result.data.category,
         content: result.data.content,
         featuredImage: imageUrl,
