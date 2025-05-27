@@ -30,6 +30,17 @@ type CreateArticleFormState = {
   };
 };
 
+function generateSlug(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export const createArticles = async (
   prevState: CreateArticleFormState,
   formData: FormData
@@ -47,7 +58,6 @@ export const createArticles = async (
     };
   }
 
-  // ✅ Fix: Get Clerk User ID and check authentication
   const { userId } = await auth();
 
   if (!userId) {
@@ -58,7 +68,6 @@ export const createArticles = async (
     };
   }
 
-  // ✅ Fix: Find the actual user using `clerkUserId` and get their `id`
   const existingUser = await prisma.user.findUnique({
     where: { clerkUserId: userId },
   });
@@ -73,7 +82,6 @@ export const createArticles = async (
     };
   }
 
-  // ✅ Fix: Handle image upload properly
   const imageFile = formData.get("featuredImage") as File | null;
 
   if (!imageFile || imageFile?.name === "undefined") {
@@ -90,7 +98,7 @@ export const createArticles = async (
   const uploadResult: UploadApiResponse | undefined = await new Promise(
     (resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: "auto" }, // ✅ Fix: Ensure correct file type handling
+        { resource_type: "auto" },
         (error, result) => {
           if (error) {
             reject(error);
@@ -113,16 +121,24 @@ export const createArticles = async (
     };
   }
 
+  // ✅ Tạo slug và đảm bảo duy nhất
+  let slug = generateSlug(result.data.title);
+  const existingSlug = await prisma.articles.findUnique({ where: { slug } });
+
+  if (existingSlug) {
+    slug = `${slug}-${Date.now()}`;
+  }
+
   try {
-    // ✅ Fix: Use `existingUser.id` instead of `userId` (which is `clerkUserId`)
     await prisma.articles.create({
       data: {
         title: result.data.title,
         subtitle: result.data.subtitle,
+        slug: slug,
         category: result.data.category,
         content: result.data.content,
         featuredImage: imageUrl,
-        authorId: existingUser.id, // ✅ Correct Foreign Key Usage
+        authorId: existingUser.id,
       },
     });
   } catch (error: unknown) {

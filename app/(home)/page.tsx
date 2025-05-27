@@ -1,6 +1,7 @@
 import BlogFooter from "@/components/home/blog-footer";
 import { Navbar } from "@/components/home/header/navbar";
 import HeroSection from "@/components/home/hero-section";
+import RightMenu from "@/components/home/RightMenu";
 import { TopArticles } from "@/components/home/top-articles";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -9,10 +10,41 @@ import React, { Suspense } from "react";
 const page = async () => {
   return (
     <main>
-      {/* <HeroSection /> */}
-      <section className="relative py-16 md:py-24">
+      <div className="flex flex-wrap gap-4 lg:hidden px-4 md:px-24 py-8 mx-auto justify-center">
+        <Link
+          href="/articles"
+          className="bg-black text-white w-fit px-4 py-2 rounded-md"
+        >
+          Tất cả
+        </Link>
+        <Link
+          href="/articles?cat=dinhduong"
+          className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
+        >
+          Dinh dưỡng
+        </Link>
+        <Link
+          href="/articles?cat=luỵentap"
+          className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
+        >
+          Luyện tập
+        </Link>
+        <Link
+          href="/articles?cat=loisong"
+          className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
+        >
+          Lối sống
+        </Link>
+        <Link
+          href="/articles?cat=khac"
+          className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
+        >
+          Khác
+        </Link>
+      </div>
+      <section className="relative px-4 md:px-24 xl:px-32 py-4 lg:py-24 flex gap-16">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
+          <div className="mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
               Bài viết mới nhất
             </h2>
@@ -25,14 +57,14 @@ const page = async () => {
 
           <div className="mt-12 text-center">
             <Link href={"/articles"}>
-              <Button
-                variant="outline"
-                className="rounded-full px-8 py-6 text-lg hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900"
-              >
-                View All Articles
+              <Button className="rounded-full px-8 py-6 text-lg hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900">
+                Xem Tất Cả Bài Viết
               </Button>
             </Link>
           </div>
+        </div>
+        <div className="w-[35%] hidden lg:block">
+          <RightMenu />
         </div>
       </section>
       <BlogFooter />

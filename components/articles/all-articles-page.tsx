@@ -48,7 +48,7 @@ export function AllArticlesPage({ articles }: SearchPageProps) {
           className="group relative overflow-hidden transition-all hover:shadow-lg"
         >
           <div className="p-6">
-            <Link href={`/articles/${article.id}`}>
+            <Link href={`/articles/${article.slug}`}>
               {/* Image Container */}
               <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
                 <Image

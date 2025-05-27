@@ -12,13 +12,14 @@ export default function BlogFooter() {
           <div className="md:col-span-2 lg:col-span-2">
             <h2 className="text-2xl font-bold">
               <span className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                Byte
+                Nutrition
               </span>
-              <span className="text-foreground">Code</span>
+              <span className="text-foreground">Blog</span>
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Where ideas meet innovation. Dive into a world of insightful
-              articles written by passionate thinkers and industry experts.
+              Nơi tri thức gặp gỡ sức khỏe. Khám phá những bài viết chuyên sâu,
+              giàu giá trị thực tiễn, được chia sẻ bởi các chuyên gia và người
+              đam mê lối sống lành mạnh.
             </p>
 
             <div className="mt-6 flex gap-2">
@@ -136,7 +137,7 @@ export default function BlogFooter() {
         {/* Copyright */}
         <div className="mt-12 border-t pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ByteCode. All rights reserved.
+            © {new Date().getFullYear()} NutritionBlog. All rights reserved.
           </p>
         </div>
       </div>
