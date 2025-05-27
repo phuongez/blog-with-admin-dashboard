@@ -88,18 +88,20 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category" className="w-[10rem]">
+                Danh mục
+              </Label>
               <select
                 id="category"
                 name="category"
-                defaultValue={article.category}
+                defaultValue="khac"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                required
               >
-                <option value="">Select Category</option>
-                <option value="technology">Technology</option>
-                <option value="programming">Programming</option>
-                <option value="web-development">Web Development</option>
+                <option value="">Chọn danh mục bài viết</option>
+                <option value="dinhduong">Dinh dưỡng</option>
+                <option value="luyentap">Luyện tập</option>
+                <option value="loisong">Lối sống</option>
+                <option value="khac">Khác</option>
               </select>
               {formState.errors.category && (
                 <span className="font-medium text-sm text-red-500">

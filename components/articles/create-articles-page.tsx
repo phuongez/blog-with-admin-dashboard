@@ -53,7 +53,6 @@ export function CreateArticlePage() {
     const formData = new FormData(event.currentTarget);
     formData.append("content", content);
 
-    // Wrap the action call in startTransition
     startTransition(() => {
       action(formData);
     });
@@ -63,16 +62,19 @@ export function CreateArticlePage() {
     <div className="max-w-4xl mx-auto p-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Create New Article</CardTitle>
+          <CardTitle className="text-2xl">Tạo bài viết mới</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <CardContent className="relative mt-12">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Article Title</Label>
+              <Label htmlFor="title" className="sr-only">
+                Tiêu đề bài viết
+              </Label>
               <Input
                 id="title"
                 name="title"
-                placeholder="Enter article title"
+                placeholder="Tiêu đề bài viết"
+                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none font-bold md:text-2xl placeholder:text-gray-400"
               />
               {formState.errors.title && (
                 <span className="font-medium text-sm text-red-500">
@@ -80,18 +82,33 @@ export function CreateArticlePage() {
                 </span>
               )}
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="subtitle" className="sr-only">
+                Tiêu đề phụ
+              </Label>
+              <Input
+                id="subtitle"
+                name="subtitle"
+                placeholder="Tiêu đề phụ..."
+                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none md:text-lg placeholder:text-gray-400"
+              />
+            </div>
+
+            <div className="flex px-3 items-center gap-3">
+              <Label htmlFor="category" className="w-[10rem]">
+                Danh mục
+              </Label>
               <select
                 id="category"
                 name="category"
+                defaultValue="khac"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <option value="">Select Category</option>
-                <option value="technology">Technology</option>
-                <option value="programming">Programming</option>
-                <option value="web-development">Web Development</option>
+                <option value="">Chọn danh mục bài viết</option>
+                <option value="dinhduong">Dinh dưỡng</option>
+                <option value="luyentap">Luyện tập</option>
+                <option value="loisong">Lối sống</option>
+                <option value="khac">Khác</option>
               </select>
               {formState.errors.category && (
                 <span className="font-medium text-sm text-red-500">
@@ -100,8 +117,10 @@ export function CreateArticlePage() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="featuredImage">Featured Image</Label>
+            <div className="flex px-3 items-center justify-between gap-3">
+              <Label htmlFor="featuredImage" className="w-[10rem]">
+                Ảnh đại diện
+              </Label>
               <Input
                 id="featuredImage"
                 name="featuredImage"
@@ -115,22 +134,56 @@ export function CreateArticlePage() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label>Content</Label>
-              <ReactQuill
-                theme="snow"
-                value={content}
-                onChange={setContent}
-                modules={modules}
-                formats={formats}
-                placeholder="Viết nội dung bài viết ở đây..."
-              />
-              {formState.errors.content && (
-                <span className="font-medium text-sm text-red-500">
-                  {formState.errors.content[0]}
-                </span>
-              )}
+            <div className="space-y-2 relative">
+              {/* Thanh công cụ cố định */}
+              <div
+                id="toolbar"
+                className="fixed top-[10%] left-[40%] right-0 z-50 bg-white p-2 border-none flex justify-center w-fit"
+              >
+                <select className="ql-header" defaultValue="">
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                  <option value="" />
+                </select>
+                <button className="ql-bold" />
+                <button className="ql-italic" />
+                <button className="ql-underline" />
+                <button className="ql-strike" />
+                <button className="ql-list" value="ordered" />
+                <button className="ql-list" value="bullet" />
+                <button className="ql-blockquote" />
+                <button className="ql-code-block" />
+                <button className="ql-link" />
+                <button className="ql-image" />
+                <select className="ql-align" />
+                <select className="ql-color" />
+                <select className="ql-background" />
+                <button className="ql-clean" />
+              </div>
+              {/* Ô nhập nội dung, có margin top tránh che */}
+              <div className="mt-[90px]">
+                <ReactQuill
+                  theme="snow"
+                  value={content}
+                  onChange={setContent}
+                  modules={{
+                    toolbar: {
+                      container: "#toolbar",
+                    },
+                  }}
+                  formats={formats}
+                  placeholder="Viết nội dung bài viết ở đây..."
+                  className="no-border"
+                />
+                {formState.errors.content && (
+                  <span className="font-medium text-sm text-red-500">
+                    {formState.errors.content[0]}
+                  </span>
+                )}
+              </div>
             </div>
+
             {formState.errors.formErrors && (
               <div className="dark:bg-transparent bg-red-100 p-2 border border-red-600">
                 <span className="font-medium text-sm text-red-500">

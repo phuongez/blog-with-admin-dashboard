@@ -58,7 +58,25 @@
   }
 }
 
+body {
+  line-height: 1.5 !important;
+}
 
+p {
+  line-height: 2 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.ql-toolbar.ql-snow {
+  border: none !important;
+}
+
+.no-border .ql-container {
+  border: none !important;
+}
+.no-border .ql-toolbar {
+  border: none !important;
+}
 
 @layer base {
   * {

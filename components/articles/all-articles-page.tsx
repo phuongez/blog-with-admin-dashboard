@@ -20,6 +20,24 @@ type SearchPageProps = {
 };
 
 export function AllArticlesPage({ articles }: SearchPageProps) {
+  function slugToCategory(slug: string): string {
+    const map: Record<string, string> = {
+      dinhduong: "Dinh dưỡng",
+      luyentap: "Luyện tập",
+      loisong: "Lối sống",
+      khac: "Khác",
+    };
+
+    return map[slug] ?? slug;
+  }
+
+  function getReadingTime(text: string): number {
+    const wordsPerMinute = 200;
+    const numberOfWords = text.trim().split(/\s+/).length;
+    const minutes = Math.ceil(numberOfWords / wordsPerMinute);
+    return minutes;
+  }
+
   if (articles.length === 0) return <NoSearchResults />;
 
   return (
@@ -41,10 +59,17 @@ export function AllArticlesPage({ articles }: SearchPageProps) {
                 />
               </div>
               {/* Article Content */}
-              <h3 className="text-xl font-semibold text-foreground">
+              <h3 className="text-xl font-semibold text-foreground h-[4rem]">
                 {article.title}
               </h3>
-              <p className="mt-2 text-muted-foreground">{article.category}</p>
+              <div className="flex justify-between items-center">
+                <p className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+                  {slugToCategory(article.category)}
+                </p>
+                <p className="text-primary text-sm">
+                  {getReadingTime(article.content)} phút đọc
+                </p>
+              </div>
 
               {/* Author & Metadata */}
               <div className="mt-6 flex items-center justify-between">
@@ -58,7 +83,11 @@ export function AllArticlesPage({ articles }: SearchPageProps) {
                   </span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {article.createdAt.toDateString()}
+                  {new Date(article.createdAt).toLocaleDateString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
                 </div>
               </div>
             </Link>

@@ -7,29 +7,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  AUTHOR
+  USER
+}
+
 model User {
   id          String     @id @default(cuid())
   clerkUserId String     @unique
   email       String     @unique
   name        String
   imageUrl    String?
-  role        String?
+  role        Role       @default(USER)
+
   articles    Articles[]
   comments    Comment[]
-  likes       Like[] // A user can like multiple articles
+  likes       Like[]
+  purchases   ArticlePurchase[]
 }
 
 model Articles {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   title         String
+  subtitle      String?
   content       String
   category      String
   featuredImage String
-  author        User      @relation(fields: [authorId], references: [id])
+  author        User       @relation(fields: [authorId], references: [id])
   authorId      String
   comments      Comment[]
-  likes         Like[] // An article can have multiple likes
-  createdAt     DateTime  @default(now())
+  likes         Like[]
+  createdAt     DateTime   @default(now())
+
+  isPaid        Boolean    @default(false)
+  price         Int?
+
+  purchases     ArticlePurchase[]
 }
 
 model Comment {
@@ -51,5 +65,16 @@ model Like {
   articleId String
   createdAt DateTime @default(now())
 
-  @@unique([userId, articleId]) // Ensures a user can like an article only once
+  @@unique([userId, articleId])
+}
+
+model ArticlePurchase {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  article   Articles @relation(fields: [articleId], references: [id])
+  articleId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, articleId])
 }

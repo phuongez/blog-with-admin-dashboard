@@ -9,16 +9,13 @@ import React, { Suspense } from "react";
 const page = async () => {
   return (
     <main>
-      <HeroSection />
+      {/* <HeroSection /> */}
       <section className="relative py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-              Featured Articles
+              Bài viết mới nhất
             </h2>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-              Discover our most popular and trending content
-            </p>
           </div>
 
           {/* Top Articles */}
