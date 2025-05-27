@@ -41,7 +41,7 @@ export async function TopArticles() {
   }
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col gap-8 ">
       {articles.slice(0, 3).map((article) => (
         <Card
           key={article.id}
@@ -52,9 +52,12 @@ export async function TopArticles() {
           )}
         >
           <div className="p-6">
-            <Link href={`/articles/${article.id}`}>
+            <Link
+              href={`/articles/${article.slug}`}
+              className="flex items-center gap-8"
+            >
               {/* Image Container */}
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
+              <div className="relative mb-4 w-[50%] aspect-[4/3] overflow-hidden rounded-xl">
                 <Image
                   src={article.featuredImage as string}
                   alt={article.title}
@@ -62,38 +65,44 @@ export async function TopArticles() {
                   className="object-cover"
                 />
               </div>
+              <div className="w-[50%]">
+                {/* Author Info */}
+                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={article.author.imageUrl as string} />
+                    <AvatarFallback>
+                      {article.author.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span>{article.author.name}</span>
+                  <span className="font-semibold mb-0 text-sm text-primary">
+                    {slugToCategory(article.category)}
+                  </span>
+                </div>
 
-              {/* Author Info */}
-              <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={article.author.imageUrl as string} />
-                  <AvatarFallback>
-                    {article.author.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span>{article.author.name}</span>
-              </div>
+                {/* Article Title */}
+                <h1 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
+                  {article.title}
+                </h1>
+                <h2 className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                  {article.subtitle}
+                </h2>
 
-              {/* Article Title */}
-              <h3 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white min-h-16">
-                {article.title}
-              </h3>
-              <p className="mt-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary w-fit">
-                {slugToCategory(article.category)}
-              </p>
-
-              {/* Article Meta Info */}
-              <div className="mt-6 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                <span>
-                  {new Date(article.createdAt).toLocaleString("vi-VN", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-                <span>{getReadingTime(article.content)} phút đọc</span>
+                {/* Article Meta Info */}
+                <div className="mt-6 flex gap-3 items-center text-sm text-gray-500 dark:text-gray-400">
+                  <span>
+                    {new Date(article.createdAt).toLocaleString("vi-VN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  <span className="text-primary">
+                    {getReadingTime(article.content)} phút đọc
+                  </span>
+                </div>
               </div>
             </Link>
           </div>

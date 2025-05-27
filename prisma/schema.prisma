@@ -30,6 +30,7 @@ model User {
 model Articles {
   id            String     @id @default(cuid())
   title         String
+  slug          String    @unique
   subtitle      String?
   content       String
   category      String
