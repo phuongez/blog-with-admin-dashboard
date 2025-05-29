@@ -17,7 +17,7 @@ const ArticleSearchInput = () => {
           type="text"
           name="search"
           defaultValue={searchText}
-          placeholder="Search articles..."
+          placeholder="Tìm bài viết..."
           className="w-full pl-10 pr-4 py-6 text-lg"
         />
       </div>

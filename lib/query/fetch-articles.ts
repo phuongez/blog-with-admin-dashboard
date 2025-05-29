@@ -1,35 +1,41 @@
 import { prisma } from "@/lib/prisma";
 
-export const fetchArticleByQuery = async (
+export async function fetchArticleByQuery(
   searchText: string,
   skip: number,
-  take: number
-) => {
-  const [articles, total] = await prisma.$transaction([
-    prisma.articles.findMany({
-      where: {
+  take: number,
+  category?: string // 👈 Thêm category
+) {
+  const whereClause: any = {
+    AND: [
+      {
         OR: [
           { title: { contains: searchText, mode: "insensitive" } },
           { category: { contains: searchText, mode: "insensitive" } },
         ],
       },
+    ],
+  };
+
+  if (category && category !== "all") {
+    whereClause.AND.push({
+      category: { equals: category, mode: "insensitive" },
+    });
+  }
+
+  const [articles, total] = await prisma.$transaction([
+    prisma.articles.findMany({
+      where: whereClause,
       include: {
         author: {
           select: { name: true, imageUrl: true, email: true },
         },
       },
-      skip: skip,
-      take: take,
+      skip,
+      take,
     }),
-    prisma.articles.count({
-      where: {
-        OR: [
-          { title: { contains: searchText, mode: "insensitive" } },
-          { category: { contains: searchText, mode: "insensitive" } },
-        ],
-      },
-    }),
+    prisma.articles.count({ where: whereClause }),
   ]);
 
   return { articles, total };
-};
+}

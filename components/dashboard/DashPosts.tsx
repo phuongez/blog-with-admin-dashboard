@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useTransition } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
+import { useEffect, useState, useTransition } from "react";
+import { useUser } from "@clerk/nextjs";
 import {
   Table,
   TableBody,
@@ -10,52 +9,67 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Link from "next/link";
-import { deleteArticle } from "@/actions/delete-article";
+} from "@/components/ui/table";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Trash } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { deleteArticle } from "@/actions/delete-article";
 
 type Article = {
   id: string;
   title: string;
-  featuredImage: string;
+  slug: string;
   createdAt: string;
+  featuredImage: string;
+  authorId: string;
   _count: {
     likes: number;
-    comments: number;
-    purchases: number;
   };
-  comments: {
-    id: string;
-    authorId: string;
-    createdAt: string;
-    body: string;
-    articleId: string;
-  }[];
+  comments?: { id: string }[];
 };
 
-type RecentArticlesProps = {
-  articles: Article[];
-};
+const ITEMS_PER_PAGE = 10;
 
-const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
+const DashPosts = () => {
+  const { user } = useUser();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      setLoading(true);
+      const res = await fetch(
+        `/api/dashboard/posts?page=${page}&limit=${ITEMS_PER_PAGE}`
+      );
+      const data = await res.json();
+      setArticles(data.articles || []);
+      setTotal(data.total || 0);
+    };
+
+    if (user?.id) {
+      fetchArticles();
+    }
+    setLoading(false);
+  }, [user?.id, page]);
+
+  //   const isEmpty = !articles || articles.length === 0;
+
+  if (loading) return <p className="text-center mt-8">Đang tải dữ liệu...</p>;
+
   return (
-    <Card className="mb-8 w-full">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Bài viết mới</CardTitle>
-          <Link href="/articles">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              Xem tất cả →
-            </Button>
-          </Link>
-        </div>
-      </CardHeader>
-      {!articles || !articles.length ? (
-        <CardContent>Không có bài viết.</CardContent>
-      ) : (
+    <div className="p-4">
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle>Danh sách bài viết</CardTitle>
+        </CardHeader>
+
         <CardContent>
+          {/* Desktop */}
           <div className="hidden md:block">
             <Table>
               <TableHeader>
@@ -68,21 +82,13 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {articles.slice(0, 5).map((article) => (
+                {articles.map((article) => (
                   <TableRow key={article.id}>
-                    <TableCell className="font-medium">
-                      {article.title}
-                    </TableCell>
+                    <TableCell>{article.title}</TableCell>
                     <TableCell>{article._count.likes}</TableCell>
                     <TableCell>{article.comments?.length ?? 0}</TableCell>
                     <TableCell>
-                      {new Date(article.createdAt).toLocaleString("vi-VN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(article.createdAt).toLocaleString("vi-VN")}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
@@ -97,20 +103,22 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
               </TableBody>
             </Table>
           </div>
-          {/* Danh sách dạng card cho mobile */}
+
+          {/* Mobile */}
           <div className="block md:hidden space-y-4">
-            {articles.slice(0, 5).map((article) => (
+            {articles.map((article) => (
               <div
                 key={article.id}
                 className="border rounded-lg p-4 shadow-sm bg-background"
               >
-                <div className="flex gap-4 relative">
-                  <div className="w-[30%] h-[75px] overflow-hidden flex items-center justify-center rounded-md">
+                <div className="flex gap-4">
+                  <div className="w-[30%]">
                     <Image
                       src={article.featuredImage}
                       alt={article.title}
                       width={100}
                       height={75}
+                      className="rounded-md object-cover"
                     />
                   </div>
                   <div className="w-[70%]">
@@ -120,17 +128,17 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-4 justify-between items-center">
-                  <div className="flex justify-between mt-2 text-sm gap-4">
-                    <span className="flex gap-2">
-                      <Heart size={18} /> {article._count.likes}
+                <div className="flex justify-between items-center mt-2">
+                  <div className="flex gap-4 text-sm">
+                    <span className="flex gap-1 items-center">
+                      <Heart size={16} /> {article._count.likes}
                     </span>
-                    <span className="flex gap-2">
-                      <MessageCircle size={18} />{" "}
+                    <span className="flex gap-1 items-center">
+                      <MessageCircle size={16} />
                       {article.comments?.length ?? 0}
                     </span>
                   </div>
-                  <div className="mt-2 flex gap-2">
+                  <div className="flex gap-2">
                     <Link href={`/dashboard/articles/${article.id}/edit`}>
                       <Button size="sm">Sửa</Button>
                     </Link>
@@ -140,13 +148,36 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          <div className="mt-6 flex justify-center gap-4">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              disabled={page === 1}
+            >
+              ← Trước
+            </Button>
+            <Button variant="destructive" size={"sm"}>
+              {page}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page * ITEMS_PER_PAGE >= total}
+            >
+              Sau →
+            </Button>
+          </div>
         </CardContent>
-      )}
-    </Card>
+      </Card>
+    </div>
   );
 };
 
-export default RecentArticles;
+export default DashPosts;
 
 type DeleteButtonProps = {
   articleId: string;

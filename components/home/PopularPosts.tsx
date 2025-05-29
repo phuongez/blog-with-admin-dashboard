@@ -44,7 +44,9 @@ const MenuPost = async () => {
 
           <div className={styles.textContainer}>
             <span className="mt-2 rounded-md bg-primary px-3 py-1 text-sm text-white w-fit">
-              {slugToCategory(article.category)}
+              <Link href={`/articles?category=${article.category}`}>
+                {slugToCategory(article.category)}
+              </Link>
             </span>
             <h3 className={styles.postTitle}>{article.title}</h3>
             <div className={styles.detail}>

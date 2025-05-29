@@ -19,25 +19,25 @@ const page = async () => {
           Tất cả
         </Link>
         <Link
-          href="/articles?cat=dinhduong"
+          href="/articles?category=dinhduong"
           className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
         >
           Dinh dưỡng
         </Link>
         <Link
-          href="/articles?cat=luỵentap"
+          href="/articles?category=luyentap"
           className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
         >
           Luyện tập
         </Link>
         <Link
-          href="/articles?cat=loisong"
+          href="/articles?category=loisong"
           className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
         >
           Lối sống
         </Link>
         <Link
-          href="/articles?cat=khac"
+          href="/articles?category=khac"
           className="bg-gray-100 hover:bg-gray-200 text-black w-fit px-4 py-2 rounded-md"
         >
           Khác

@@ -108,13 +108,13 @@ export function NoSearchResults() {
 
       {/* Title */}
       <h3 className="text-xl font-semibold text-foreground">
-        No Results Found
+        Không tìm thấy kết quả
       </h3>
 
       {/* Description */}
       <p className="mt-2 text-muted-foreground">
-        We could not find any articles matching your search. Try a different
-        keyword or phrase.
+        Chúng tôi không tìm thấy bài viết nào có chứa từ khoá tìm kiếm. Hãy thử
+        tìm kiếm bằng từ khoá khác.
       </p>
     </div>
   );

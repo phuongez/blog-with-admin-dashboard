@@ -20,7 +20,7 @@ model User {
   name        String
   imageUrl    String?
   role        Role       @default(USER)
-
+  createdAt DateTime @default(now())
   articles    Articles[]
   comments    Comment[]
   likes       Like[]

@@ -76,7 +76,9 @@ export async function TopArticles() {
                   </Avatar>
                   <span>{article.author.name}</span>
                   <span className="font-semibold mb-0 text-sm text-primary">
-                    {slugToCategory(article.category)}
+                    <Link href={`/articles?category=${article.category}`}>
+                      {slugToCategory(article.category)}
+                    </Link>
                   </span>
                 </div>
 
