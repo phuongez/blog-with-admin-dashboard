@@ -1,0 +1,14 @@
+blockquote {
+  border-left: 3px solid #6366f1 !important;
+}
+
+p a,
+h1 a,
+h2 a {
+  font-weight: 700 !important;
+  color: #6366f1 !important;
+}
+
+element.style {
+  background-color: #6366f1 !important;
+}

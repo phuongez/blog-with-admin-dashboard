@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Search, Menu, X } from "lucide-react";
 import { ModeToggle } from "../../dark-mode";
 import Link from "next/link";
-import { SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignedOut, SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import SearchInput from "./search-input";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useUser();
+  const userRole = user?.publicMetadata?.role;
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,7 +35,7 @@ export function Navbar() {
             </div>
 
             {/* Right Section - Search & Actions */}
-            <div className="flex flex-1 justify-end items-center sm:gap-4">
+            <div className="flex flex-1 justify-end items-center gap-2 sm:gap-4">
               {/* <Link
                 href="/articles"
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -42,6 +44,11 @@ export function Navbar() {
               </Link> */}
               {/* Theme Toggle */}
               <ModeToggle />
+              {userRole === "admin" && (
+                <Link href="/dashboard">
+                  <Button>Dashboard</Button>
+                </Link>
+              )}
 
               {/* User Actions */}
               <SignedIn>

@@ -18,16 +18,9 @@ export function CreateArticlePage() {
 
   //   Quill settings
   const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["blockquote", "code-block"], // 👈 quote ở đây
-      ["link", "image"], // 👈 image ở đây
-      [{ align: [] }],
-      [{ color: [] }, { background: [] }],
-      ["clean"],
-    ],
+    toolbar: {
+      container: "#toolbar",
+    },
   };
 
   const formats = [
@@ -39,7 +32,6 @@ export function CreateArticlePage() {
     "blockquote", // 👈 quote
     "code-block",
     "list",
-    "bullet",
     "link",
     "image", // 👈 image
     "align",
@@ -82,17 +74,18 @@ export function CreateArticlePage() {
                 </span>
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="subtitle" className="sr-only">
-                Tiêu đề phụ
-              </Label>
-              <Input
-                id="subtitle"
-                name="subtitle"
-                placeholder="Tiêu đề phụ..."
-                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none md:text-lg placeholder:text-gray-400"
-              />
-            </div>
+            <textarea
+              id="subtitle"
+              name="subtitle"
+              placeholder="Tiêu đề phụ..."
+              rows={1}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = "auto";
+                target.style.height = `${target.scrollHeight}px`;
+              }}
+              className="px-3 w-full resize-none overflow-hidden border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none md:text-lg placeholder:text-gray-400"
+            />
 
             <div className="flex px-3 items-center gap-3">
               <Label htmlFor="category" className="w-[10rem]">
@@ -138,7 +131,7 @@ export function CreateArticlePage() {
               {/* Thanh công cụ cố định */}
               <div
                 id="toolbar"
-                className="fixed top-[10%] left-[40%] right-0 z-50 bg-white p-2 border-none flex justify-center w-fit"
+                className="fixed top-16 left-0 right-0 z-50 bg-white p-2 border-none flex flex-wrap justify-start overflow-x-auto w-full max-w-full sm:justify-center sm:overflow-visible"
               >
                 <select className="ql-header" defaultValue="">
                   <option value="1" />
@@ -167,11 +160,7 @@ export function CreateArticlePage() {
                   theme="snow"
                   value={content}
                   onChange={setContent}
-                  modules={{
-                    toolbar: {
-                      container: "#toolbar",
-                    },
-                  }}
+                  modules={modules}
                   formats={formats}
                   placeholder="Viết nội dung bài viết ở đây..."
                   className="no-border"

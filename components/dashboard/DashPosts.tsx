@@ -49,12 +49,12 @@ const DashPosts = () => {
       const data = await res.json();
       setArticles(data.articles || []);
       setTotal(data.total || 0);
+      setLoading(false);
     };
 
     if (user?.id) {
       fetchArticles();
     }
-    setLoading(false);
   }, [user?.id, page]);
 
   //   const isEmpty = !articles || articles.length === 0;

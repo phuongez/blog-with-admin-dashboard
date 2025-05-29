@@ -32,7 +32,11 @@ const MenuPost = async () => {
   return (
     <div className={styles.items}>
       {sortedArticles.slice(0, 4).map((article) => (
-        <Link className={styles.item} href={`/articles/${article.slug}`}>
+        <Link
+          key={article.id}
+          className={styles.item}
+          href={`/articles/${article.slug}`}
+        >
           <div className={styles.imageContainer}>
             <Image
               src={article.featuredImage}
