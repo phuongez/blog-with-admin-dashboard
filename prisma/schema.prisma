@@ -25,6 +25,7 @@ model User {
   comments    Comment[]
   likes       Like[]
   purchases   ArticlePurchase[]
+  savedArticles SavedArticle[]
 }
 
 model Articles {
@@ -45,6 +46,7 @@ model Articles {
   price         Int?
 
   purchases     ArticlePurchase[]
+  savedByUsers SavedArticle[]
 }
 
 model Comment {
@@ -78,4 +80,15 @@ model ArticlePurchase {
   createdAt DateTime @default(now())
 
   @@unique([userId, articleId])
+}
+
+model SavedArticle {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  article   Articles @relation(fields: [articleId], references: [id])
+  articleId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, articleId]) // không cho lưu trùng
 }

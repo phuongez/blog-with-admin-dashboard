@@ -44,9 +44,15 @@ export function Navbar() {
               </Link> */}
               {/* Theme Toggle */}
               <ModeToggle />
-              {userRole === "admin" && (
+              {(userRole === "ADMIN" || userRole === "AUTHOR") && (
                 <Link href="/dashboard">
                   <Button>Dashboard</Button>
+                </Link>
+              )}
+
+              {(userRole === "USER" || userRole === undefined) && (
+                <Link href={"/myarticles"}>
+                  <Button>My Articles</Button>
                 </Link>
               )}
 

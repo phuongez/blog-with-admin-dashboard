@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/home/header/navbar";
 import { prisma } from "@/lib/prisma";
+import { syncUserRoleToClerk } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
 
@@ -21,6 +22,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
         },
       });
     }
+    await syncUserRoleToClerk(user.id);
   }
 
   return (

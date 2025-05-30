@@ -7,8 +7,14 @@ import { createComments } from "@/actions/create-comment";
 
 type CommentFormProps = {
   articleId: string;
+  isSignedIn: boolean;
+  userImage: string;
 };
-const CommentForm: React.FC<CommentFormProps> = ({ articleId }) => {
+const CommentForm: React.FC<CommentFormProps> = ({
+  articleId,
+  isSignedIn,
+  userImage,
+}) => {
   const [formState, action, isPending] = useActionState(
     createComments.bind(null, articleId),
     {
@@ -19,7 +25,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ articleId }) => {
     <form action={action} className="mb-8">
       <div className="flex gap-4">
         <Avatar className="h-10 w-10">
-          <AvatarImage src="/current-user-avatar.jpg" />
+          <AvatarImage src={userImage} />
           <AvatarFallback>Y</AvatarFallback>
         </Avatar>
         <div className="flex-1">
@@ -34,7 +40,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ articleId }) => {
             </p>
           )}
           <div className="mt-4 flex justify-end">
-            <Button disabled={isPending} type="submit">
+            <Button disabled={isPending || !isSignedIn} type="submit">
               {isPending ? "Loading..." : "Post Comment"}
             </Button>
           </div>

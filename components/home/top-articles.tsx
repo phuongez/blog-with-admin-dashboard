@@ -75,7 +75,7 @@ export async function TopArticles() {
                     </AvatarFallback>
                   </Avatar>
                   <span>{article.author.name}</span>
-                  <span className="font-semibold mb-0 text-sm text-primary">
+                  <span className="font-bold mb-0 text-sm text-primary">
                     {slugToCategory(article.category)}
                   </span>
                 </div>

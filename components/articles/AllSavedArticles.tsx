@@ -5,21 +5,17 @@ import Image from "next/image";
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
 
-type SearchPageProps = {
-  articles: Prisma.ArticlesGetPayload<{
-    include: {
-      author: {
-        select: {
-          name: true;
-          email: true;
-          imageUrl: true;
-        };
-      };
-    };
-  }>[];
+type ArticleWithAuthor = Prisma.ArticlesGetPayload<{
+  include: {
+    author: true;
+  };
+}>;
+
+type Props = {
+  articles: ArticleWithAuthor[];
 };
 
-export function AllArticlesPage({ articles }: SearchPageProps) {
+export function AllSavedArticles({ articles }: Props) {
   function slugToCategory(slug: string): string {
     const map: Record<string, string> = {
       dinhduong: "Dinh dưỡng",
@@ -113,8 +109,7 @@ export function NoSearchResults() {
 
       {/* Description */}
       <p className="mt-2 text-muted-foreground">
-        Chúng tôi không tìm thấy bài viết nào có chứa từ khoá tìm kiếm. Hãy thử
-        tìm kiếm bằng từ khoá khác.
+        Chúng tôi không tìm thấy bài viết nào được lưu trong tài khoản của bạn.
       </p>
     </div>
   );

@@ -23,7 +23,19 @@ type ArticleDetailPageProps = {
   }>;
 };
 
+type User = Prisma.UserGetPayload<{
+  include: {
+    articles: true;
+    comments: true;
+    likes: true;
+    purchases: true;
+  };
+}>;
+
 export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
+  let isLiked = false;
+  let isSignedIn = false;
+  let user: User | null;
   const comments = await prisma.comment.findMany({
     where: {
       articleId: article.id,
@@ -43,11 +55,13 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
     where: { articleId: article.id },
   });
   const { userId } = await auth();
-  const user = await prisma.user.findUnique({
-    where: { clerkUserId: userId as string },
-  });
-
-  const isLiked = likes.some((like) => like.userId === user?.id);
+  if (userId) {
+    user = await prisma.user.findUnique({
+      where: { clerkUserId: userId as string },
+    });
+    isLiked = likes.some((like) => like.userId === user?.id);
+    isSignedIn = true;
+  }
 
   function slugToCategory(slug: string): string {
     const map: Record<string, string> = {
@@ -66,6 +80,10 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
     const numberOfWords = text.trim().split(/\s+/).length;
     const minutes = Math.ceil(numberOfWords / wordsPerMinute);
     return minutes;
+  }
+
+  function stripInlineStyles(html: string) {
+    return html.replace(/style="[^"]*"/g, "");
   }
 
   return (
@@ -112,11 +130,20 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
           {/* Article Content */}
           <section
             className="prose prose-lg dark:prose-invert max-w-none mb-12"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{
+              __html: stripInlineStyles(article.content),
+            }}
           />
 
           {/* Article Actions */}
-          <LikeButton articleId={article.id} likes={likes} isLiked={isLiked} />
+          <LikeButton
+            articleId={article.id}
+            articleTitle={article.title}
+            articleSlug={article.slug}
+            likes={likes}
+            isLiked={isLiked}
+            isSignedIn={isSignedIn}
+          />
 
           {/* Comments Section */}
           <Card className="p-6">
@@ -128,10 +155,16 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
             </div>
 
             {/* Comment Form */}
-            <CommentForm articleId={article.id} />
+            {user && (
+              <CommentForm
+                articleId={article.id}
+                isSignedIn={isSignedIn}
+                userImage={user?.imageUrl || ""}
+              />
+            )}
 
             {/* Comments List */}
-            <CommentList comments={comments} />
+            <CommentList comments={comments} user={user} article={article} />
           </Card>
         </article>
       </main>

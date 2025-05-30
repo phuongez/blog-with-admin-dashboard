@@ -6,7 +6,9 @@ import { revalidatePath } from "next/cache";
 
 export async function toggleLike(articleId: string) {
   const { userId } = await auth(); // Clerk's user ID
-  if (!userId) throw new Error("You must be logged in to like an article");
+  if (!userId) {
+    throw new Error("Bạn cần đăng nhập để thích bài viết");
+  }
 
   // Ensure the user exists in the database
   const user = await prisma.user.findUnique({
@@ -14,7 +16,7 @@ export async function toggleLike(articleId: string) {
   });
 
   if (!user) {
-    throw new Error("User does not exist in the database.");
+    throw new Error("Không có người dùng này.");
   }
 
   // Check if the user has already liked the article

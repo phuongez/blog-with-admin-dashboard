@@ -1,31 +1,33 @@
-import { AllArticlesPage } from "@/components/articles/all-articles-page";
-import ArticleSearchInput from "@/components/articles/article-search-input";
-import { Button } from "@/components/ui/button";
+import { fetchSavedArticles } from "@/lib/query/fetch-saved-articles";
 import React, { Suspense } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
-
-type SearchPageProps = {
-  searchParams: { search?: string; category?: string; page?: string };
-};
+import { Button } from "@/components/ui/button";
+import ArticleSearchInput from "@/components/articles/article-search-input";
+import { AllSavedArticles } from "@/components/articles/AllSavedArticles";
 
 const ITEMS_PER_PAGE = 6;
 
-const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
-  const searchText = searchParams.search || "";
-  const category = searchParams.category || "";
+type SearchPageProps = {
+  searchParams: { page?: string };
+};
+
+const MyArticles: React.FC<SearchPageProps> = async ({ searchParams }) => {
+  const { userId } = await auth();
+  if (!userId) return [];
+  const user = await prisma.user.findUnique({
+    where: { clerkUserId: userId as string },
+  });
+
   const currentPage = Number(searchParams.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 
-  const { articles, total } = await fetchArticleByQuery(
-    searchText,
-    skip,
-    take,
-    category // ✅ Truyền category vào
-  );
+  const { articles, total } = await fetchSavedArticles(user, skip, take);
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
@@ -35,22 +37,22 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
         {/* Page Header */}
         <div className="mb-12 space-y-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Tất cả bài viết
+            Các bài viết đã lưu
           </h1>
           <Suspense>
             <ArticleSearchInput />
           </Suspense>
         </div>
 
+        {/* All Articles */}
+        <Suspense fallback={<AllArticlesPageSkeleton />}>
+          <AllSavedArticles articles={articles} />
+        </Suspense>
+
         {/* Pagination */}
-        <div className="mt-12 mb-4 flex justify-center gap-2">
+        <div className="mt-12 flex justify-center gap-2">
           {/* Prev Button */}
-          <Link
-            href={`?search=${searchText}&category=${category}&page=${
-              currentPage - 1
-            }`}
-            passHref
-          >
+          <Link href={`?page=${currentPage - 1}`} passHref>
             <Button variant="ghost" size="sm" disabled={currentPage === 1}>
               ← Trước
             </Button>
@@ -60,11 +62,7 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
           {Array.from({ length: totalPages }).map((_, index) => {
             const pageNum = index + 1;
             return (
-              <Link
-                key={pageNum}
-                href={`?search=${searchText}&category=${category}&page=${pageNum}`}
-                passHref
-              >
+              <Link key={pageNum} href={`?page=${pageNum}`} passHref>
                 <Button
                   variant={currentPage === pageNum ? "destructive" : "ghost"}
                   size="sm"
@@ -77,12 +75,7 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
           })}
 
           {/* Next Button */}
-          <Link
-            href={`?search=${searchText}&category=${category}&page=${
-              currentPage + 1
-            }`}
-            passHref
-          >
+          <Link href={`?page=${currentPage + 1}`} passHref>
             <Button
               variant="ghost"
               size="sm"
@@ -92,16 +85,12 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
             </Button>
           </Link>
         </div>
-        {/* All Articles */}
-        <Suspense fallback={<AllArticlesPageSkeleton />}>
-          <AllArticlesPage articles={articles} />
-        </Suspense>
       </main>
     </div>
   );
 };
 
-export default page;
+export default MyArticles;
 
 export function AllArticlesPageSkeleton() {
   return (

@@ -3,16 +3,48 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
+import type { Metadata } from "next";
 
-type ArticlePageProps = {
-  params: {
-    slug: string;
-  };
-};
-
-const page: React.FC<ArticlePageProps> = async ({ params }) => {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const article = await prisma.articles.findUnique({
     where: { slug: params.slug },
+  });
+
+  if (!article) {
+    return {
+      title: "Bài viết không tồn tại",
+      description: "Không tìm thấy bài viết yêu cầu.",
+    };
+  }
+
+  return {
+    title: article.title,
+    description: article.subtitle || article.title,
+    openGraph: {
+      title: article.title,
+      description: article.subtitle || article.title,
+      url: `https://your-domain.com/articles/${article.slug}`,
+      type: "article",
+      images: [
+        {
+          url: article.featuredImage,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+  };
+}
+
+const page = async ({ params }: { params: { slug: string } }) => {
+  const { slug } = params;
+  const article = await prisma.articles.findUnique({
+    where: { slug },
     include: {
       author: {
         select: {
