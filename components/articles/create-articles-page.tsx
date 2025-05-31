@@ -86,7 +86,7 @@ export function CreateArticlePage() {
               }}
               className="px-3 w-full resize-none overflow-hidden border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none md:text-lg placeholder:text-gray-400"
             />
-
+            {/* Danh mục */}
             <div className="flex px-3 items-center gap-3">
               <Label htmlFor="category" className="w-[10rem]">
                 Danh mục
@@ -106,6 +106,27 @@ export function CreateArticlePage() {
               {formState.errors.category && (
                 <span className="font-medium text-sm text-red-500">
                   {formState.errors.category}
+                </span>
+              )}
+            </div>
+            {/* Loại bài viết */}
+            <div className="flex px-3 items-center gap-3">
+              <Label htmlFor="isPaid" className="w-[10rem]">
+                Loại bài viết
+              </Label>
+              <select
+                id="isPaid"
+                name="isPaid"
+                defaultValue="free"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="">Chọn loại bài viết</option>
+                <option value="paid">Trả phí</option>
+                <option value="free">Miễn phí</option>
+              </select>
+              {formState.errors.isPaid && (
+                <span className="font-medium text-sm text-red-500">
+                  {formState.errors.isPaid}
                 </span>
               )}
             </div>

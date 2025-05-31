@@ -31,6 +31,9 @@ export async function fetchArticleByQuery(
           select: { name: true, imageUrl: true, email: true },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       skip,
       take,
     }),

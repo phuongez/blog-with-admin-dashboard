@@ -1,4 +1,5 @@
 "use server";
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -17,6 +18,9 @@ const createArticleSchema = z.object({
   subtitle: z.string().min(3),
   category: z.string().min(3).max(50),
   content: z.string().min(10),
+  isPaid: z.string().refine((val) => val === "paid" || val === "free", {
+    message: "Bạn phải chọn loại bài viết",
+  }),
 });
 
 type CreateArticleFormState = {
@@ -24,6 +28,7 @@ type CreateArticleFormState = {
     title?: string[];
     subtitle?: string[];
     category?: string[];
+    isPaid?: string[]; // sửa thành string[] (Zod sẽ trả về string lỗi)
     featuredImage?: string[];
     content?: string[];
     formErrors?: string[];
@@ -50,6 +55,7 @@ export const createArticles = async (
     subtitle: formData.get("subtitle"),
     category: formData.get("category"),
     content: formData.get("content"),
+    isPaid: formData.get("isPaid"),
   });
 
   if (!result.success) {
@@ -57,6 +63,8 @@ export const createArticles = async (
       errors: result.error.flatten().fieldErrors,
     };
   }
+
+  const isPaidBoolean = result.data.isPaid === "paid";
 
   const { userId } = await auth();
 
@@ -139,6 +147,7 @@ export const createArticles = async (
         content: result.data.content,
         featuredImage: imageUrl,
         authorId: existingUser.id,
+        isPaid: isPaidBoolean, // 👈 thêm dòng này
       },
     });
   } catch (error: unknown) {

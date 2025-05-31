@@ -1,4 +1,5 @@
 "use server";
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -12,19 +13,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Schema for validating input fields
 const updateArticleSchema = z.object({
   title: z.string().min(3).max(100),
   category: z.string().min(3).max(50),
   content: z.string().min(10),
+  isPaid: z.string().refine((val) => val === "paid" || val === "free", {
+    message: "Bạn phải chọn loại bài viết",
+  }),
 });
 
 type UpdateArticleFormState = {
   errors: {
     title?: string[];
     category?: string[];
-    featuredImage?: string[];
     content?: string[];
+    isPaid?: string[];
+    featuredImage?: string[];
     formErrors?: string[];
   };
 };
@@ -34,11 +38,11 @@ export const updateArticles = async (
   prevState: UpdateArticleFormState,
   formData: FormData
 ): Promise<UpdateArticleFormState> => {
-  // ✅ Validate input fields
   const result = updateArticleSchema.safeParse({
     title: formData.get("title"),
     category: formData.get("category"),
     content: formData.get("content"),
+    isPaid: formData.get("isPaid"),
   });
 
   if (!result.success) {
@@ -47,7 +51,8 @@ export const updateArticles = async (
     };
   }
 
-  // ✅ Authenticate user
+  const isPaidBoolean = result.data.isPaid === "paid";
+
   const { userId } = await auth();
   if (!userId) {
     return {
@@ -55,7 +60,6 @@ export const updateArticles = async (
     };
   }
 
-  // ✅ Find the existing article
   const existingArticle = await prisma.articles.findUnique({
     where: { id: articleId },
   });
@@ -66,7 +70,6 @@ export const updateArticles = async (
     };
   }
 
-  // ✅ Check if the user is the author
   const user = await prisma.user.findUnique({
     where: { clerkUserId: userId },
   });
@@ -77,9 +80,8 @@ export const updateArticles = async (
     };
   }
 
-  let imageUrl = existingArticle.featuredImage; // Default to the existing image
+  let imageUrl = existingArticle.featuredImage;
 
-  // ✅ Check if a new image is provided
   const imageFile = formData.get("featuredImage") as File | null;
   if (imageFile && imageFile.name !== "undefined") {
     try {
@@ -114,19 +116,18 @@ export const updateArticles = async (
     } catch (error) {
       if (error instanceof Error) {
         return {
-          errors: {
-            formErrors: [error.message],
-          },
+          errors: { formErrors: [error.message] },
         };
       } else {
         return {
-          errors: { formErrors: ["Error uploading image. Please try again."] },
+          errors: {
+            formErrors: ["Error uploading image. Please try again."],
+          },
         };
       }
     }
   }
 
-  // ✅ Update the article in the database
   try {
     await prisma.articles.update({
       where: { id: articleId },
@@ -134,15 +135,14 @@ export const updateArticles = async (
         title: result.data.title,
         category: result.data.category,
         content: result.data.content,
-        featuredImage: imageUrl, // Updated or existing image
+        featuredImage: imageUrl,
+        isPaid: isPaidBoolean,
       },
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
-        errors: {
-          formErrors: [error.message],
-        },
+        errors: { formErrors: [error.message] },
       };
     } else {
       return {

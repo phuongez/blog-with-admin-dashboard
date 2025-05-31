@@ -67,12 +67,14 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
     <div className="max-w-4xl mx-auto p-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Article</CardTitle>
+          <CardTitle className="text-2xl">Sửa bài viết</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Article Title</Label>
+            <div className="flex items-center gap-3">
+              <Label htmlFor="title" className="w-[10rem]">
+                Tiêu đề bài viết
+              </Label>
               <Input
                 id="title"
                 name="title"
@@ -87,7 +89,7 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="flex items-center gap-3">
               <Label htmlFor="category" className="w-[10rem]">
                 Danh mục
               </Label>
@@ -106,6 +108,27 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
               {formState.errors.category && (
                 <span className="font-medium text-sm text-red-500">
                   {formState.errors.category}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Label htmlFor="isPaid" className="w-[10rem]">
+                Loại bài viết
+              </Label>
+              <select
+                id="isPaid"
+                name="isPaid"
+                defaultValue={article.isPaid ? "paid" : "free"} // 👈 Sửa ở đây
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="">Chọn loại bài viết</option>
+                <option value="paid">Trả phí</option>
+                <option value="free">Miễn phí</option>
+              </select>
+              {formState.errors.isPaid && (
+                <span className="font-medium text-sm text-red-500">
+                  {formState.errors.isPaid}
                 </span>
               )}
             </div>

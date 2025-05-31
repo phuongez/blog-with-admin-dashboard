@@ -35,7 +35,7 @@ type User = Prisma.UserGetPayload<{
 export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
   let isLiked = false;
   let isSignedIn = false;
-  let user: User | null;
+  let user: User | null = null;
   const comments = await prisma.comment.findMany({
     where: {
       articleId: article.id,
@@ -57,7 +57,13 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
   const { userId } = await auth();
   if (userId) {
     user = await prisma.user.findUnique({
-      where: { clerkUserId: userId as string },
+      where: { clerkUserId: userId },
+      include: {
+        articles: true,
+        comments: true,
+        likes: true,
+        purchases: true,
+      },
     });
     isLiked = likes.some((like) => like.userId === user?.id);
     isSignedIn = true;
@@ -102,6 +108,11 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
 
             <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4 leading-[1.5]">
               {article.title}
+              {article.isPaid && (
+                <span className="px-3" title="Bài viết trả phí">
+                  🔒
+                </span>
+              )}
             </h1>
 
             <div className="flex items-center gap-4 text-muted-foreground">

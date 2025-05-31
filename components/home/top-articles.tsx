@@ -51,6 +51,11 @@ export async function TopArticles() {
             "bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg"
           )}
         >
+          {article.isPaid && (
+            <div className="absolute top-4 right-4 bg-yellow-400 text-white text-xs font-semibold px-2 py-1 rounded z-10">
+              Trả phí
+            </div>
+          )}
           <div className="p-6">
             <Link
               href={`/articles/${article.slug}`}

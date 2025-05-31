@@ -47,6 +47,11 @@ export function AllArticlesPage({ articles }: SearchPageProps) {
           key={article.id}
           className="group relative overflow-hidden transition-all hover:shadow-lg"
         >
+          {article.isPaid && (
+            <div className="absolute top-4 right-4 bg-yellow-400 text-white text-xs font-semibold px-2 py-1 rounded z-10">
+              Trả phí
+            </div>
+          )}
           <div className="p-6">
             <Link href={`/articles/${article.slug}`}>
               {/* Image Container */}
