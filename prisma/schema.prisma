@@ -92,3 +92,10 @@ model SavedArticle {
 
   @@unique([userId, articleId]) // không cho lưu trùng
 }
+
+model TransactionLog {
+  id        String   @id
+  content   String
+  amount    Int
+  createdAt DateTime @default(now())
+}
