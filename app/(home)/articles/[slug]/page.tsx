@@ -64,9 +64,9 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const { userId: clerkUserId } = await auth();
 
   // Nếu chưa đăng nhập, không được xem nếu bài viết trả phí
-  if (!clerkUserId && article.isPaid) {
-    return redirect("/login");
-  }
+  // if (!clerkUserId && article.isPaid) {
+  //   return redirect("/sign-in");
+  // }
 
   const user = clerkUserId
     ? await prisma.user.findUnique({ where: { clerkUserId } })
@@ -93,13 +93,9 @@ const page = async ({ params }: { params: { slug: string } }) => {
 
   const canView = isFree || isAuthor || isAdmin || hasPurchased;
 
-  if (!canView) {
-    return redirect("/paywall");
-  }
-
   return (
     <div>
-      <ArticleDetailPage article={article} />
+      <ArticleDetailPage article={article} canView={canView} />
     </div>
   );
 };

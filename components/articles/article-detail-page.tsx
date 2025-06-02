@@ -1,3 +1,4 @@
+// components/articles/article-detail-page.tsx
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MessageCircle } from "lucide-react";
@@ -6,10 +7,11 @@ import CommentForm from "../comments/comment-form";
 import CommentList from "../comments/comment-list";
 import { prisma } from "@/lib/prisma";
 import LikeButton from "./actions/like-button";
-import { auth } from "@clerk/nextjs/server";
 import "./articleDetail.css";
+import ArticleContent from "./ArticleContent";
+import { auth } from "@clerk/nextjs/server";
 
-type ArticleDetailPageProps = {
+export type ArticleDetailPageProps = {
   article: Prisma.ArticlesGetPayload<{
     include: {
       author: {
@@ -21,6 +23,7 @@ type ArticleDetailPageProps = {
       };
     };
   }>;
+  canView: boolean;
 };
 
 type User = Prisma.UserGetPayload<{
@@ -32,7 +35,10 @@ type User = Prisma.UserGetPayload<{
   };
 }>;
 
-export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
+export async function ArticleDetailPage({
+  article,
+  canView,
+}: ArticleDetailPageProps) {
   let isLiked = false;
   let isSignedIn = false;
   let user: User | null = null;
@@ -54,6 +60,7 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
   const likes = await prisma.like.findMany({
     where: { articleId: article.id },
   });
+
   const { userId } = await auth();
   if (userId) {
     user = await prisma.user.findUnique({
@@ -76,29 +83,19 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
       loisong: "Lối sống",
       khac: "Khác",
     };
-
     return map[slug] ?? slug;
   }
 
-  // Tính thời gian đọc
   function getReadingTime(text: string): number {
     const wordsPerMinute = 200;
     const numberOfWords = text.trim().split(/\s+/).length;
-    const minutes = Math.ceil(numberOfWords / wordsPerMinute);
-    return minutes;
-  }
-
-  function stripInlineStyles(html: string) {
-    return html.replace(/style="[^"]*"/g, "");
+    return Math.ceil(numberOfWords / wordsPerMinute);
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Reuse your existing Navbar */}
-
       <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 ">
         <article className="mx-auto max-w-3xl">
-          {/* Article Header */}
           <header className="mb-12">
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
@@ -138,25 +135,21 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
             </div>
           </header>
 
-          {/* Article Content */}
-          <section
-            className="prose prose-lg dark:prose-invert max-w-none mb-12"
-            dangerouslySetInnerHTML={{
-              __html: stripInlineStyles(article.content),
-            }}
+          <ArticleContent
+            article={article}
+            canView={canView}
+            userId={user?.id || null}
           />
 
-          {/* Article Actions */}
           <LikeButton
             articleId={article.id}
             articleTitle={article.title}
             articleSlug={article.slug}
             likes={likes}
-            isLiked={isLiked}
-            isSignedIn={isSignedIn}
+            isLiked={false}
+            isSignedIn={false}
           />
 
-          {/* Comments Section */}
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-8">
               <MessageCircle className="h-6 w-6 text-primary" />
@@ -165,16 +158,11 @@ export async function ArticleDetailPage({ article }: ArticleDetailPageProps) {
               </h2>
             </div>
 
-            {/* Comment Form */}
-            {user && (
-              <CommentForm
-                articleId={article.id}
-                isSignedIn={isSignedIn}
-                userImage={user?.imageUrl || ""}
-              />
-            )}
-
-            {/* Comments List */}
+            <CommentForm
+              articleId={article.id}
+              isSignedIn={isSignedIn}
+              userImage={user?.imageUrl as string}
+            />
             <CommentList comments={comments} user={user} article={article} />
           </Card>
         </article>

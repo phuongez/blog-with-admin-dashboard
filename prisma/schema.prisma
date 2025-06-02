@@ -79,7 +79,7 @@ model ArticlePurchase {
   articleId String
   createdAt DateTime @default(now())
 
-  @@unique([userId, articleId])
+  @@unique([userId, articleId], name: "userId_articleId")
 }
 
 model SavedArticle {

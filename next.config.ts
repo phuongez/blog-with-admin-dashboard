@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverActions: {
+    bodySizeLimit: "10mb", // 👈 tăng giới hạn tại đây
+  },
   images: {
     remotePatterns: [
       {
@@ -26,6 +29,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "img.clerk.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "qr.sepay.vn",
         pathname: "/**",
       },
     ],

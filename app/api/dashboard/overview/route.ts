@@ -1,7 +1,20 @@
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+  const user = await prisma.user.findUnique({
+    where: {
+      clerkUserId: userId,
+    },
+  });
+
+  const whereCondition = user?.role === "ADMIN" ? {} : { authorId: user?.id };
+
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -44,6 +57,7 @@ export async function GET() {
       },
     }),
     prisma.articles.findMany({
+      where: whereCondition,
       orderBy: {
         createdAt: "desc",
       },
