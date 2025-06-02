@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       title,
+      slug,
       subtitle,
       content,
       category,
@@ -22,18 +23,21 @@ export async function POST(req: Request) {
     if (!user)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    const slugBase = title
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-");
+    // const slugBase = title
+    //   .normalize("NFD")
+    //   .replace(/[\u0300-\u036f]/g, "")
+    //   .toLowerCase()
+    //   .trim()
+    //   .replace(/[^a-z0-9\s-]/g, "")
+    //   .replace(/\s+/g, "-");
 
-    let slug = slugBase;
+    // let slug = slugBase;
     const existing = await prisma.articles.findUnique({ where: { slug } });
     if (existing) {
-      slug = `${slug}-${Date.now()}`;
+      return NextResponse.json(
+        { error: "Slug này đã tồn tại" },
+        { status: 400 }
+      );
     }
 
     const article = await prisma.articles.create({

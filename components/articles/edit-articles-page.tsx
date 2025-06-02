@@ -1,7 +1,10 @@
 "use client";
 import { FormEvent, startTransition, useActionState, useState } from "react";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+
+const TiptapEditor = dynamic(() => import("@/components/TiptapEditor"), {
+  ssr: false,
+});
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,7 +74,7 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mt-12">
               <Label htmlFor="title" className="w-[10rem]">
                 Tiêu đề bài viết
               </Label>
@@ -161,16 +164,9 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
                 </span>
               )}
             </div>
-            <div className="space-y-2">
-              <Label>Content</Label>
-              <ReactQuill
-                theme="snow"
-                // defaultValue={}
-                modules={modules}
-                formats={formats}
-                value={content}
-                onChange={setContent}
-              />
+            <div className="space-y-2 flex flex-col items-center">
+              <Label htmlFor="content">Nội dung bài viết</Label>
+              <TiptapEditor content={content} onChange={setContent} />
               {formState.errors.content && (
                 <span className="font-medium text-sm text-red-500">
                   {formState.errors.content[0]}

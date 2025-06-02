@@ -5,12 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import "react-quill-new/dist/quill.snow.css";
+// import "react-quill-new/dist/quill.snow.css";
+// import dynamic from "next/dynamic";
 import dynamic from "next/dynamic";
+const TiptapEditor = dynamic(() => import("@/components/TiptapEditor"), {
+  ssr: false,
+});
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+// const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 export function CreateArticlePage() {
   const [content, setContent] = useState("");
@@ -49,6 +53,7 @@ export function CreateArticlePage() {
     const formData = new FormData(form);
 
     const title = formData.get("title") as string;
+    const slug = formData.get("slug") as string;
     const subtitle = formData.get("subtitle") as string;
     const category = formData.get("category") as string;
     const isPaid = formData.get("isPaid") as string;
@@ -73,6 +78,7 @@ export function CreateArticlePage() {
       },
       body: JSON.stringify({
         title,
+        slug,
         subtitle,
         category,
         isPaid,
@@ -119,6 +125,9 @@ export function CreateArticlePage() {
         <CardContent className="relative mt-12">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Tiêu đề */}
+            <Label htmlFor="title" className="w-[10rem] sr-only">
+              Tiêu đề bài viết
+            </Label>
             <Input
               id="title"
               name="title"
@@ -129,7 +138,24 @@ export function CreateArticlePage() {
               <p className="text-sm text-red-500">{errors.title}</p>
             )}
 
+            {/* Slug */}
+            <Label htmlFor="slug" className="w-[10rem] sr-only">
+              Đường dẫn rút gọn
+            </Label>
+            <Input
+              id="slug"
+              name="slug"
+              placeholder="Đường dẫn rút gọn..."
+              className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none md:text-lg placeholder:text-gray-400"
+            />
+            {errors.slug && (
+              <p className="text-sm text-red-500">{errors.slug}</p>
+            )}
+
             {/* Phụ đề */}
+            <Label htmlFor="subtitle" className="w-[10rem] sr-only">
+              Tiêu đề phụ
+            </Label>
             <textarea
               name="subtitle"
               placeholder="Tiêu đề phụ..."
@@ -187,47 +213,14 @@ export function CreateArticlePage() {
             </div>
 
             {/* Nội dung */}
-            <div className="space-y-2 relative">
-              {/* Thanh công cụ cố định */}
-              <div
-                id="toolbar"
-                className="fixed top-16 left-0 right-0 z-50 bg-white p-2 border-none flex flex-wrap justify-start overflow-x-auto w-full max-w-full sm:justify-center sm:overflow-visible"
-              >
-                <select className="ql-header" defaultValue="">
-                  <option value="1" />
-                  <option value="2" />
-                  <option value="3" />
-                  <option value="" />
-                </select>
-                <button className="ql-bold" />
-                <button className="ql-italic" />
-                <button className="ql-underline" />
-                <button className="ql-strike" />
-                <button className="ql-list" value="ordered" />
-                <button className="ql-list" value="bullet" />
-                <button className="ql-blockquote" />
-                <button className="ql-code-block" />
-                <button className="ql-link" />
-                <button className="ql-image" />
-                <select className="ql-align" />
-                <select className="ql-color" />
-                <select className="ql-background" />
-                <button className="ql-clean" />
-              </div>
-              <div className="mt-[90px]">
-                <ReactQuill
-                  theme="snow"
-                  value={content}
-                  onChange={setContent}
-                  modules={modules}
-                  formats={formats}
-                  className="no-border"
-                  placeholder="Viết nội dung bài viết ở đây..."
-                />
-                {errors.content && (
-                  <p className="text-sm text-red-500">{errors.content}</p>
-                )}
-              </div>
+            <div className="space-y-2 relative mt-6 w-full">
+              <Label className="sr-only" htmlFor="content">
+                Nội dung bài viết
+              </Label>
+              <TiptapEditor content={content} onChange={setContent} />
+              {errors.content && (
+                <p className="text-sm text-red-500">{errors.content}</p>
+              )}
             </div>
 
             {errors.formErrors && (
