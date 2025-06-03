@@ -24,6 +24,15 @@ const DashboardNavbar = () => {
           </Button>
         </Link>
 
+        <Link href={"/dashboard?tab=revenue"}>
+          <Button
+            variant="ghost"
+            className="rounded-none focus:border-b-2 focus:border-black"
+          >
+            <FileText className="hidden md:inline-block mr-2 h-4 w-4" />
+            Doanh số
+          </Button>
+        </Link>
         <Link href={"/dashboard?tab=posts"}>
           <Button
             variant="ghost"

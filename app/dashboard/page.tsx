@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogDashboard } from "@/components/dashboard/blog-dashboard";
+import DashboardRevenue from "@/components/dashboard/DashboardRevenue";
 import DashComments from "@/components/dashboard/DashComments";
 import DashPosts from "@/components/dashboard/DashPosts";
 import DashProfile from "@/components/dashboard/DashProfile";
@@ -20,6 +21,7 @@ const page = () => {
   return (
     <div>
       {tab === "profile" && <DashProfile />}
+      {tab === "revenue" && <DashboardRevenue />}
 
       {tab === "posts" && <DashPosts />}
       {tab === "comments" && <DashComments />}

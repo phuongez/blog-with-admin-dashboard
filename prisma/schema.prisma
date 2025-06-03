@@ -14,88 +14,107 @@ enum Role {
 }
 
 model User {
-  id          String     @id @default(cuid())
-  clerkUserId String     @unique
-  email       String     @unique
-  name        String
-  imageUrl    String?
-  role        Role       @default(USER)
-  createdAt DateTime @default(now())
-  articles    Articles[]
-  comments    Comment[]
-  likes       Like[]
-  purchases   ArticlePurchase[]
-  savedArticles SavedArticle[]
+  id             String             @id @default(cuid())
+  clerkUserId    String             @unique
+  email          String             @unique
+  name           String
+  imageUrl       String?
+  role           Role               @default(USER)
+  createdAt      DateTime           @default(now())
+
+  articles       Articles[]
+  comments       Comment[]
+  likes          Like[]
+  purchases      ArticlePurchase[]
+  savedArticles  SavedArticle[]
+  transactions   TransactionLog[]
 }
 
 model Articles {
-  id            String     @id @default(cuid())
-  title         String
-  slug          String    @unique
-  subtitle      String?
-  content       String
-  category      String
-  featuredImage String
-  author        User       @relation(fields: [authorId], references: [id])
-  authorId      String
-  comments      Comment[]
-  likes         Like[]
-  createdAt     DateTime   @default(now())
-  showToc     Boolean  @default(false)
-  isPaid        Boolean    @default(false)
-  price         Int?
+  id             String             @id @default(cuid())
+  title          String
+  slug           String             @unique
+  subtitle       String?
+  content        String
+  category       String
+  featuredImage  String
+  createdAt      DateTime           @default(now())
+  showToc        Boolean            @default(false)
+  isPaid         Boolean            @default(false)
+  price          Int?
 
-  purchases     ArticlePurchase[]
-  savedByUsers SavedArticle[]
+  author         User               @relation(fields: [authorId], references: [id])
+  authorId       String
+
+  comments       Comment[]
+  likes          Like[]
+  purchases      ArticlePurchase[]
+  savedByUsers   SavedArticle[]
+  transactions   TransactionLog[]
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  body      String
-  articleId String
-  article   Articles @relation(fields: [articleId], references: [id])
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
+  id             String     @id @default(cuid())
+  body           String
+  createdAt      DateTime   @default(now())
+
+  article        Articles   @relation(fields: [articleId], references: [id])
+  articleId      String
+
+  author         User       @relation(fields: [authorId], references: [id])
+  authorId       String
 }
 
 model Like {
-  id        String   @id @default(cuid())
-  isLiked   Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  article   Articles @relation(fields: [articleId], references: [id])
-  articleId String
-  createdAt DateTime @default(now())
+  id             String     @id @default(cuid())
+  isLiked        Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+
+  user           User       @relation(fields: [userId], references: [id])
+  userId         String
+
+  article        Articles   @relation(fields: [articleId], references: [id])
+  articleId      String
 
   @@unique([userId, articleId])
 }
 
 model ArticlePurchase {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  article   Articles @relation(fields: [articleId], references: [id])
-  articleId String
-  createdAt DateTime @default(now())
+  id               String     @id @default(cuid())
+  createdAt        DateTime   @default(now())
+  priceAtPurchase  Int
+
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String
+
+  article          Articles   @relation(fields: [articleId], references: [id])
+  articleId        String
 
   @@unique([userId, articleId], name: "userId_articleId")
 }
 
 model SavedArticle {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  article   Articles @relation(fields: [articleId], references: [id])
-  articleId String
-  createdAt DateTime @default(now())
+  id               String     @id @default(cuid())
+  createdAt        DateTime   @default(now())
 
-  @@unique([userId, articleId]) // không cho lưu trùng
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String
+
+  article          Articles   @relation(fields: [articleId], references: [id])
+  articleId        String
+
+  @@unique([userId, articleId])
 }
 
 model TransactionLog {
-  id        String   @id
-  content   String
-  amount    Int
-  createdAt DateTime @default(now())
+  id               String     @id @default(cuid())
+  content          String
+  amount           Int
+  createdAt        DateTime   @default(now())
+
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String
+
+  article          Articles   @relation(fields: [articleId], references: [id])
+  articleId        String
 }
