@@ -33,7 +33,9 @@ type Props = {
 export default function TiptapEditor({ content, onChange }: Props) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        horizontalRule: false,
+      }),
       Link.configure({
         openOnClick: false,
       }),
@@ -70,6 +72,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
         return false;
       },
     },
+    immediatelyRender: false,
   });
 
   useEffect(() => {
@@ -223,15 +226,6 @@ export default function TiptapEditor({ content, onChange }: Props) {
         >
           <Minus size={18} />
         </button>
-        <div className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-sm">
-          <input
-            type="checkbox"
-            id="showToc"
-            name="showToc"
-            className="w-4 h-4"
-          />
-          <TableOfContents />
-        </div>
       </div>
 
       {/* Editor */}

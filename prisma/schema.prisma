@@ -41,7 +41,7 @@ model Articles {
   comments      Comment[]
   likes         Like[]
   createdAt     DateTime   @default(now())
-
+  showToc     Boolean  @default(false)
   isPaid        Boolean    @default(false)
   price         Int?
 

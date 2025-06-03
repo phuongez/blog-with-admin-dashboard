@@ -198,6 +198,20 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
                 </span>
               )}
             </div>
+            {/* Table of content */}
+            <div className="flex items-center gap-2 px-3">
+              <input
+                type="checkbox"
+                id="showToc"
+                name="showToc"
+                defaultChecked={article?.showToc} // dùng ở trang sửa bài
+                className="w-4 h-4"
+              />
+              <label htmlFor="showToc" className="text-sm">
+                Hiển thị mục lục (Table of Contents)
+              </label>
+            </div>
+
             <div className="space-y-2 flex flex-col items-center">
               <Label htmlFor="content">Nội dung bài viết</Label>
               <TiptapEditor content={content} onChange={setContent} />

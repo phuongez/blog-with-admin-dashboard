@@ -57,6 +57,7 @@ export function CreateArticlePage() {
     const subtitle = formData.get("subtitle") as string;
     const category = formData.get("category") as string;
     const isPaid = formData.get("isPaid") as string;
+    const showToc = formData.get("showToc") === "on";
 
     if (!imageFile) {
       setErrors({ featuredImage: ["Vui lòng chọn ảnh đại diện"] });
@@ -84,6 +85,7 @@ export function CreateArticlePage() {
         isPaid,
         content,
         imageUrl,
+        showToc,
         clerkUserId: clerkUserId,
       }),
     });
@@ -210,6 +212,18 @@ export function CreateArticlePage() {
               {errors.featuredImage && (
                 <p className="text-sm text-red-500">{errors.featuredImage}</p>
               )}
+            </div>
+            {/* Table of contents */}
+            <div className="flex items-center gap-2 px-3">
+              <input
+                type="checkbox"
+                id="showToc"
+                name="showToc"
+                className="w-4 h-4"
+              />
+              <label htmlFor="showToc" className="text-sm">
+                Hiển thị mục lục (Table of Contents)
+              </label>
             </div>
 
             {/* Nội dung */}

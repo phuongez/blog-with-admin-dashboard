@@ -10,6 +10,8 @@ import LikeButton from "./actions/like-button";
 import "./articleDetail.css";
 import ArticleContent from "./ArticleContent";
 import { auth } from "@clerk/nextjs/server";
+import TableOfContents from "../TableOfContents";
+import * as cheerio from "cheerio";
 
 export type ArticleDetailPageProps = {
   article: Prisma.ArticlesGetPayload<{
@@ -55,6 +57,15 @@ export async function ArticleDetailPage({
         },
       },
     },
+  });
+
+  const $ = cheerio.load(article.content);
+  const headings = $("h1").toArray();
+
+  const toc = headings.map((el) => {
+    const text = $(el).text();
+    const id = $(el).attr("id") || text.toLowerCase().replace(/\s+/g, "-");
+    return { id, text };
   });
 
   const likes = await prisma.like.findMany({
@@ -135,6 +146,8 @@ export async function ArticleDetailPage({
             </div>
             {/* <div className="w-full h-[1px] bg-primary"></div> */}
           </header>
+
+          {article.showToc && toc.length >= 3 && <TableOfContents toc={toc} />}
 
           <ArticleContent
             article={article}

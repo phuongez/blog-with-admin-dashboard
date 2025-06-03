@@ -20,6 +20,10 @@ const updateArticleSchema = z.object({
   isPaid: z.string().refine((val) => val === "paid" || val === "free", {
     message: "Bạn phải chọn loại bài viết",
   }),
+  showToc: z
+    .union([z.literal("on"), z.literal("")])
+    .optional()
+    .transform((val) => val === "on"),
 });
 
 type UpdateArticleFormState = {
@@ -30,6 +34,7 @@ type UpdateArticleFormState = {
     category?: string[];
     content?: string[];
     isPaid?: string[];
+    showToc?: string[];
     featuredImage?: string[];
     formErrors?: string[];
   };
@@ -45,6 +50,7 @@ export const updateArticles = async (
     category: formData.get("category"),
     content: formData.get("content"),
     isPaid: formData.get("isPaid"),
+    showToc: formData.get("showToc"),
   });
 
   if (!result.success) {
@@ -139,6 +145,7 @@ export const updateArticles = async (
         content: result.data.content,
         featuredImage: imageUrl,
         isPaid: isPaidBoolean,
+        showToc: result.data.showToc,
       },
     });
   } catch (error: unknown) {
