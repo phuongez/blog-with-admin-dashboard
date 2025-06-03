@@ -96,8 +96,8 @@ export async function ArticleDetailPage({
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 ">
         <article className="mx-auto max-w-3xl">
-          <header className="mb-12">
-            <div className="flex flex-wrap gap-2 mb-4">
+          <header className="mb-12 pb-4 border-b">
+            <div className="flex flex-wrap gap-2 mb-2">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
                 {slugToCategory(article.category)}
               </span>
@@ -133,6 +133,7 @@ export async function ArticleDetailPage({
                 </p>
               </div>
             </div>
+            {/* <div className="w-full h-[1px] bg-primary"></div> */}
           </header>
 
           <ArticleContent

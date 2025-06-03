@@ -19,8 +19,11 @@ import {
   Link as LinkIcon,
   Image as ImageIcon,
   Minus,
+  TableOfContents,
 } from "lucide-react";
 import LinkPopover from "./editor/LinkPopover";
+import { Iframe } from "./editor/Iframe";
+import { sanitizeURL } from "@/lib/sanitize";
 
 type Props = {
   content: string;
@@ -38,6 +41,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
         inline: false,
       }),
       HorizontalRule,
+      Iframe,
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -219,6 +223,15 @@ export default function TiptapEditor({ content, onChange }: Props) {
         >
           <Minus size={18} />
         </button>
+        <div className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-sm">
+          <input
+            type="checkbox"
+            id="showToc"
+            name="showToc"
+            className="w-4 h-4"
+          />
+          <TableOfContents />
+        </div>
       </div>
 
       {/* Editor */}

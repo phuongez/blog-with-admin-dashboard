@@ -73,7 +73,10 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
           <CardTitle className="text-2xl">Sửa bài viết</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 max-w-prose mx-auto"
+          >
             <div className="flex items-center gap-3 mt-12">
               <Label htmlFor="title" className="w-[10rem]">
                 Tiêu đề bài viết
@@ -82,14 +85,45 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
                 id="title"
                 name="title"
                 defaultValue={article.title}
-                placeholder="Enter article title"
+                placeholder="Nhập tiêu đề bài viết"
                 required
+                className="text-sm"
               />
               {formState.errors.title && (
                 <span className="font-medium text-sm text-red-500">
                   {formState.errors.title}
                 </span>
               )}
+            </div>
+            {/* Slug */}
+            <div className="flex items-center gap-3 mt-12">
+              <Label htmlFor="slug" className="w-[10rem]">
+                Đường dẫn rút gọn
+              </Label>
+              <Input
+                id="slug"
+                name="slug"
+                defaultValue={article.slug}
+                placeholder="Đường dẫn rút gọn..."
+                required
+                className="text-sm"
+              />
+              {formState.errors.slug && (
+                <p className="text-sm text-red-500">{formState.errors.slug}</p>
+              )}
+            </div>
+
+            {/* Phụ đề */}
+            <div className="flex items-center gap-3 mt-12">
+              <Label htmlFor="subtitle" className="w-[10rem]">
+                Tiêu đề phụ
+              </Label>
+              <textarea
+                name="subtitle"
+                placeholder="Tiêu đề phụ..."
+                defaultValue={article.subtitle || ""}
+                className="px-3 w-full h-fit resize-none overflow-hidden border border-input rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 shadow-sm placeholder:text-gray-400 text-sm"
+              />
             </div>
 
             <div className="flex items-center gap-3">

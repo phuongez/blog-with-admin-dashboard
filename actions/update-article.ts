@@ -25,6 +25,8 @@ const updateArticleSchema = z.object({
 type UpdateArticleFormState = {
   errors: {
     title?: string[];
+    slug?: string[];
+    subtitle?: string[];
     category?: string[];
     content?: string[];
     isPaid?: string[];
