@@ -50,7 +50,7 @@ export function Navbar() {
                 </Link>
               )}
 
-              {(userRole === "USER" || userRole === undefined) && (
+              {userRole === "USER" && (
                 <Link href={"/myarticles"}>
                   <Button>My Articles</Button>
                 </Link>

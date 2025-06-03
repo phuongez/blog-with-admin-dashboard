@@ -9,7 +9,7 @@ export default function TableOfContents({ toc }: { toc: TOCItem[] }) {
 
   return (
     <aside className="mb-8 p-4 bg-gray-50 border rounded-md">
-      <h2 className="text-lg font-semibold mb-2">Mục lục</h2>
+      <h2 className="text-lg font-semibold mb-2 dark:text-black">Mục lục</h2>
       <ul className="space-y-1 text-sm list-disc pl-4">
         {toc.map((item) => (
           <li key={item.id}>

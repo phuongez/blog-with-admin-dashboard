@@ -82,6 +82,10 @@ article > h1 {
   font-size: 1.75rem !important;
 }
 
+article > h2 {
+  font-size: 1.5rem !important;
+}
+
 article h1 strong {
   font-weight: 600 !important;
 }

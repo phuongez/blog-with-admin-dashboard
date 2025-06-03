@@ -24,6 +24,8 @@ import {
 import LinkPopover from "./editor/LinkPopover";
 import { Iframe } from "./editor/Iframe";
 import { sanitizeURL } from "@/lib/sanitize";
+import { CustomHeading } from "./editor/extensions/CustomHeading";
+import slugify from "slugify";
 
 type Props = {
   content: string;
@@ -36,6 +38,9 @@ export default function TiptapEditor({ content, onChange }: Props) {
       StarterKit.configure({
         horizontalRule: false,
       }),
+      CustomHeading.configure({
+        levels: [1, 2], // hỗ trợ H1, H2
+      }),
       Link.configure({
         openOnClick: false,
       }),
@@ -47,8 +52,33 @@ export default function TiptapEditor({ content, onChange }: Props) {
     ],
     content,
     onUpdate: ({ editor }) => {
+      const doc = editor.state.doc;
+      const { tr } = editor.state;
+
+      doc.descendants((node, pos) => {
+        if (node.type.name === "heading") {
+          const currentId = node.attrs.id;
+          const content = node.textContent;
+          const slug = slugify(content, { lower: true, strict: true });
+
+          // Gán lại nếu chưa có id hoặc id không đúng với nội dung hiện tại
+          if (!currentId || currentId !== slug) {
+            console.log(`Gán lại id từ "${currentId}" → "${slug}"`);
+            tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              id: slug,
+            });
+          }
+        }
+      });
+
+      if (tr.docChanged) {
+        editor.view.dispatch(tr);
+      }
+
       onChange(editor.getHTML());
     },
+
     editorProps: {
       attributes: {
         class:
@@ -130,6 +160,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
       {/* Toolbar */}
       <div className="fixed max-w-3xl mx-auto top-[12rem] left-0 right-0 z-50 bg-white/95 p-2 border-none flex flex-wrap gap-1 justify-start overflow-x-auto w-full sm:justify-center sm:overflow-visible">
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="In đậm"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -137,6 +168,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Bold size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="In nghiêng"
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -144,6 +176,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Italic size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Gạch ngang"
           onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -151,6 +184,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Strikethrough size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Đầu mục 1"
           onClick={() =>
@@ -160,6 +194,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Heading1 size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Đầu mục 2"
           onClick={() =>
@@ -169,6 +204,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Heading2 size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Danh sách"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -176,6 +212,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <List size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Danh sách số"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -183,6 +220,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <ListOrdered size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Trích dẫn"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -190,6 +228,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <Quote size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Khung"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -213,6 +252,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
         />
 
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Chèn ảnh"
           onClick={addImageManually}
@@ -220,6 +260,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <ImageIcon size={18} />
         </button>
         <button
+          type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
           title="Chia đoạn"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
