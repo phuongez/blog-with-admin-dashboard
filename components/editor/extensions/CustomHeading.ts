@@ -1,6 +1,5 @@
 import { Heading } from "@tiptap/extension-heading";
 import { mergeAttributes } from "@tiptap/core";
-import slugify from "slugify";
 
 export const CustomHeading = Heading.extend({
   addAttributes() {
