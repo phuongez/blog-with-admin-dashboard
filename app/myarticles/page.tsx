@@ -2,20 +2,15 @@ import { fetchSavedArticles } from "@/lib/query/fetch-saved-articles";
 import React, { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ArticleSearchInput from "@/components/articles/article-search-input";
 import { AllSavedArticles } from "@/components/articles/AllSavedArticles";
+import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkeleton";
 
 const ITEMS_PER_PAGE = 6;
 
-type SearchPageProps = {
-  searchParams: { page?: string };
-};
-
-const MyArticles: React.FC<SearchPageProps> = async ({ searchParams }) => {
+export default async function Page({ searchParams }: { searchParams?: any }) {
   const { userId } = await auth();
   if (!userId) return [];
   const user = await prisma.user.findUnique({
@@ -85,34 +80,6 @@ const MyArticles: React.FC<SearchPageProps> = async ({ searchParams }) => {
           </Link>
         </div>
       </main>
-    </div>
-  );
-};
-
-export default MyArticles;
-
-export function AllArticlesPageSkeleton() {
-  return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <Card
-          key={index}
-          className="group relative overflow-hidden transition-all hover:shadow-lg"
-        >
-          <div className="p-6">
-            <Skeleton className="mb-4 h-48 w-full rounded-xl bg-gradient-to-br from-purple-100/50 to-blue-100/50 dark:from-purple-900/20 dark:to-blue-900/20" />
-            <Skeleton className="h-6 w-3/4 rounded-lg" />
-            <Skeleton className="mt-2 h-4 w-1/2 rounded-lg" />
-            <div className="mt-6 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Skeleton className="h-8 w-8 rounded-full" />
-                <Skeleton className="h-4 w-20 rounded-lg " />
-              </div>
-              <Skeleton className="h-4 w-24 rounded-lg " />
-            </div>
-          </div>
-        </Card>
-      ))}
     </div>
   );
 }
