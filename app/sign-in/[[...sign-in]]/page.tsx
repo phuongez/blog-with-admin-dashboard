@@ -5,7 +5,6 @@ export default function Page() {
     <div className="w-full h-screen flex items-center justify-center">
       <SignIn
         routing="virtual"
-        path="/sign-in"
         appearance={{
           elements: {
             card: "shadow-xl rounded-lg",
