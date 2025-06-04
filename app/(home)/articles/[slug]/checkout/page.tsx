@@ -3,22 +3,19 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
 
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
-
-export default function CheckoutPage({ params }: PageProps) {
+export default function CheckoutPage() {
   const [qrUrl, setQrUrl] = useState("");
   const { user, isSignedIn } = useUser();
+  const params = useParams(); // Lấy params từ hook client-side
+
+  const slug = params?.slug as string; // Có thể là string | string[] tùy cấu hình router
 
   useEffect(() => {
     async function fetchQR() {
-      if (!isSignedIn || !user) return;
+      if (!isSignedIn || !user || !slug) return;
 
-      // Gọi API để lấy Prisma User ID từ Clerk ID
       const userRes = await fetch("/api/get-user-id", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,7 +27,7 @@ export default function CheckoutPage({ params }: PageProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          articleId: params.slug,
+          articleId: slug,
           price: 20000,
           userId: prismaUserId,
         }),
@@ -41,7 +38,7 @@ export default function CheckoutPage({ params }: PageProps) {
     }
 
     fetchQR();
-  }, [params.slug]);
+  }, [slug]);
 
   return (
     <div className="text-center mt-10">
