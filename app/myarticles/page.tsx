@@ -10,7 +10,7 @@ import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkelet
 
 const ITEMS_PER_PAGE = 6;
 
-export default async function Page({ searchParams }: { searchParams?: any }) {
+export default async function Page({ searchParams }: any) {
   const { userId } = await auth();
   if (!userId) return [];
   const user = await prisma.user.findUnique({
