@@ -7,10 +7,11 @@ import type { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  const { slug } = await params;
   const article = await prisma.articles.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   if (!article) {
@@ -40,8 +41,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const article = await prisma.articles.findUnique({
     where: { slug },
     include: {
