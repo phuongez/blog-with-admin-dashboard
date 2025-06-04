@@ -22,7 +22,9 @@ export async function GET() {
   // Doanh thu theo tác giả
   const authors = await prisma.user.findMany({
     where: {
-      role: "AUTHOR",
+      role: {
+        in: ["AUTHOR", "ADMIN"], // ← Lấy cả AUTHOR và ADMIN
+      },
     },
     select: {
       id: true,

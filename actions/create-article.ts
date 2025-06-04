@@ -21,6 +21,12 @@ const createArticleSchema = z.object({
   isPaid: z.string().refine((val) => val === "paid" || val === "free", {
     message: "Bạn phải chọn loại bài viết",
   }),
+  showToc: z
+    .preprocess(
+      (val) => val === "on" || val === "true" || val === true,
+      z.boolean()
+    )
+    .optional(),
 });
 
 type CreateArticleFormState = {
@@ -29,6 +35,7 @@ type CreateArticleFormState = {
     subtitle?: string[];
     category?: string[];
     isPaid?: string[]; // sửa thành string[] (Zod sẽ trả về string lỗi)
+    showToc?: string[];
     featuredImage?: string[];
     content?: string[];
     formErrors?: string[];
@@ -56,6 +63,7 @@ export const createArticles = async (
     category: formData.get("category"),
     content: formData.get("content"),
     isPaid: formData.get("isPaid"),
+    showToc: formData.get("showToc"),
   });
 
   if (!result.success) {
@@ -148,6 +156,7 @@ export const createArticles = async (
         featuredImage: imageUrl,
         authorId: existingUser.id,
         isPaid: isPaidBoolean, // 👈 thêm dòng này
+        showToc: result.data.showToc,
       },
     });
   } catch (error: unknown) {

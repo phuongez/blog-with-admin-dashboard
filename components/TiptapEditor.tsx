@@ -20,13 +20,16 @@ import {
   Image as ImageIcon,
   Minus,
   TableOfContents,
+  Youtube,
+  ExternalLink,
 } from "lucide-react";
 import LinkPopover from "./editor/LinkPopover";
-import { Iframe } from "./editor/Iframe";
+import { IframeEmbed } from "./editor/extensions/IframeEmbed";
 import { sanitizeURL } from "@/lib/sanitize";
 import { CustomHeading } from "./editor/extensions/CustomHeading";
 import slugify from "slugify";
-
+import { YoutubeEmbed } from "./editor/extensions/YoutubeEmbed";
+import { Card } from "./ui/card";
 type Props = {
   content: string;
   onChange: (html: string) => void;
@@ -48,7 +51,8 @@ export default function TiptapEditor({ content, onChange }: Props) {
         inline: false,
       }),
       HorizontalRule,
-      Iframe,
+      IframeEmbed,
+      YoutubeEmbed,
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -267,10 +271,60 @@ export default function TiptapEditor({ content, onChange }: Props) {
         >
           <Minus size={18} />
         </button>
+        <button
+          type="button"
+          className="hover:bg-gray-50 p-2 rounded-sm"
+          title="Nhúng iframe"
+          onClick={() => {
+            const url = prompt("Nhập URL iframe:");
+            if (url) {
+              editor
+                .chain()
+                .focus()
+                .insertContent({
+                  type: "iframeEmbed",
+                  attrs: {
+                    src: url,
+                    width: "100%",
+                    height: "600",
+                  },
+                })
+                .run();
+            }
+          }}
+        >
+          <ExternalLink size={18} /> {/* hoặc icon nào bạn thích */}
+        </button>
+        <button
+          type="button"
+          className="hover:bg-gray-50 p-2 rounded-sm"
+          title="Nhúng video Youtube"
+          onClick={() => {
+            const url = prompt("Nhập URL Youtube:");
+            if (url) {
+              editor
+                .chain()
+                .focus()
+                .insertContent({
+                  type: "youtubeEmbed",
+                  attrs: {
+                    src: url,
+                    width: "100%",
+                    height: "600",
+                  },
+                })
+                .run();
+            }
+          }}
+        >
+          <Youtube size={18} /> {/* hoặc icon nào bạn thích */}
+        </button>
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} />
+      <Card className="focus:border-none">
+        <EditorContent editor={editor} />
+      </Card>
     </div>
   );
 }

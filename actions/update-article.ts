@@ -21,9 +21,11 @@ const updateArticleSchema = z.object({
     message: "Bạn phải chọn loại bài viết",
   }),
   showToc: z
-    .union([z.literal("on"), z.literal("")])
-    .optional()
-    .transform((val) => val === "on"),
+    .preprocess(
+      (val) => val === "on" || val === "true" || val === true,
+      z.boolean()
+    )
+    .optional(),
 });
 
 type UpdateArticleFormState = {

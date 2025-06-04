@@ -62,10 +62,10 @@ export function Navbar() {
               </SignedIn>
               <SignedOut>
                 <div className="flex items-center gap-2">
-                  <SignInButton>
+                  <SignInButton mode="modal">
                     <Button variant="outline">Đăng nhập</Button>
                   </SignInButton>
-                  <SignUpButton>
+                  <SignUpButton mode="modal">
                     <Button>Đăng kí</Button>
                   </SignUpButton>
                 </div>

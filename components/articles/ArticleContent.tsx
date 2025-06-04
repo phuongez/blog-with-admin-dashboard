@@ -49,15 +49,6 @@ export default function ArticleContent({ article, canView, userId }: Props) {
 
   const shouldShowLoginModal = article.isPaid && !userId;
 
-  // if (!article.isPaid || hasPurchased || canView) {
-  //   return (
-  //     <article
-  //       className="prose prose-lg dark:prose-invert max-w-none mb-12"
-  //       dangerouslySetInnerHTML={{ __html: article.content }}
-  //     />
-  //   );
-  // }
-
   return (
     <>
       <div
@@ -95,12 +86,6 @@ export default function ArticleContent({ article, canView, userId }: Props) {
       {userId && showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 max-w-2xl w-full relative flex flex-wrap gap-6 shadow-lg">
-            {/* <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-            >
-              ✕
-            </button> */}
             {/* Bên trái: Thông tin thanh toán */}
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-2">Bài viết trả phí</h2>
@@ -110,8 +95,8 @@ export default function ArticleContent({ article, canView, userId }: Props) {
               <p className="text-sm mb-2">Thông tin chuyển khoản:</p>
               <ul className="text-sm mb-4 list-disc list-inside">
                 <li>Ngân hàng: Vietcombank</li>
-                <li>Số tài khoản: 0491000053320</li>
-                <li>Chủ tài khoản: Nguyễn Duy Phương</li>
+                <li>Số tài khoản: 0711000301859</li>
+                <li>Chủ tài khoản: Vũ Anh Tú</li>
                 <li>
                   Nội dung: BLOG-{article.id}-{userId}
                 </li>
