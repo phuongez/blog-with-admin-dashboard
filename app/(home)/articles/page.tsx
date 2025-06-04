@@ -2,22 +2,20 @@ import { AllArticlesPage } from "@/components/articles/all-articles-page";
 import ArticleSearchInput from "@/components/articles/article-search-input";
 import { Button } from "@/components/ui/button";
 import React, { Suspense } from "react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
 import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkeleton";
 
-type SearchPageProps = {
-  searchParams: { search?: string; category?: string; page?: string };
-};
-
 const ITEMS_PER_PAGE = 6;
 
-const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
-  const searchText = searchParams.search || "";
-  const category = searchParams.category || "";
-  const currentPage = Number(searchParams.page) || 1;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { search?: string; category?: string; page?: string };
+}) {
+  const searchText = searchParams?.search || "";
+  const category = searchParams?.category || "";
+  const currentPage = Number(searchParams?.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 
@@ -100,6 +98,4 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
       </main>
     </div>
   );
-};
-
-export default page;
+}
