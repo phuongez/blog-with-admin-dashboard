@@ -40,7 +40,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const article = await prisma.articles.findUnique({
     where: { slug },
