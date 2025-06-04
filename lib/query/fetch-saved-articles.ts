@@ -32,7 +32,15 @@ export async function fetchSavedArticles(
         article: {
           include: {
             author: {
-              select: { name: true, imageUrl: true, email: true },
+              select: {
+                id: true,
+                clerkUserId: true,
+                role: true,
+                createdAt: true,
+                name: true,
+                imageUrl: true,
+                email: true,
+              },
             },
           },
         },
