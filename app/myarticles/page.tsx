@@ -2,7 +2,6 @@ import { fetchSavedArticles } from "@/lib/query/fetch-saved-articles";
 import React, { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";

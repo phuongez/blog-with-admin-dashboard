@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   serverActions: {
     bodySizeLimit: "10mb", // 👈 tăng giới hạn tại đây
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {

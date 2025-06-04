@@ -1,7 +1,5 @@
 import BlogFooter from "@/components/home/blog-footer";
-import { Navbar } from "@/components/home/header/navbar";
 import SearchInput from "@/components/home/header/search-input";
-import HeroSection from "@/components/home/hero-section";
 import RightMenu from "@/components/home/RightMenu";
 import { TopArticles } from "@/components/home/top-articles";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,6 @@
 import { ArticleDetailPage } from "@/components/articles/article-detail-page";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import React from "react";
 import type { Metadata } from "next";
 
