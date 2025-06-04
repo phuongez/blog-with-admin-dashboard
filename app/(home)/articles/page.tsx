@@ -8,11 +8,7 @@ import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkelet
 
 const ITEMS_PER_PAGE = 6;
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { search?: string; category?: string; page?: string };
-}) {
+export default async function Page({ searchParams }: { searchParams?: any }) {
   const searchText = searchParams?.search || "";
   const category = searchParams?.category || "";
   const currentPage = Number(searchParams?.page) || 1;
