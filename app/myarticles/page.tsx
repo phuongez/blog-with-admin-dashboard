@@ -17,7 +17,7 @@ export default async function Page({ searchParams }: any) {
     where: { clerkUserId: userId as string },
   });
 
-  const currentPage = Number(searchParams.page) || 1;
+  const currentPage = (await Number(searchParams.page)) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 

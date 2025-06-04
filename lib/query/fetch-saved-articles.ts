@@ -3,13 +3,7 @@ import { Prisma } from "@prisma/client";
 
 type ArticleWithAuthor = Prisma.ArticlesGetPayload<{
   include: {
-    author: {
-      select: {
-        name: true;
-        imageUrl: true;
-        email: true;
-      };
-    };
+    author: true; // hoặc dùng select: { ...đầy đủ như trên... }
   };
 }>;
 
