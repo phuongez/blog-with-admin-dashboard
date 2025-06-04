@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 
-export default function CheckoutPage({ params }: { params: { slug: string } }) {
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
+export default function CheckoutPage({ params }: PageProps) {
   const [qrUrl, setQrUrl] = useState("");
   const { user, isSignedIn } = useUser();
 
