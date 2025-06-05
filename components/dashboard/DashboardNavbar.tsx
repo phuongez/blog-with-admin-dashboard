@@ -12,8 +12,8 @@ import {
 import Link from "next/link";
 const DashboardNavbar = () => {
   return (
-    <div className="w-full px-4 border-b">
-      <nav className="flex items-center justify-center">
+    <div className="w-full px-4 border-b flex justify-center">
+      <nav className="flex items-center overflow-x-scroll">
         <Link href={"/dashboard"}>
           <Button
             variant="ghost"
@@ -42,6 +42,15 @@ const DashboardNavbar = () => {
             Bài viết
           </Button>
         </Link>
+        <Link href={"/dashboard?tab=users"}>
+          <Button
+            variant="ghost"
+            className="rounded-none focus:border-b-2 focus:border-black"
+          >
+            <FileText className="hidden md:inline-block mr-2 h-4 w-4" />
+            Người dùng
+          </Button>
+        </Link>
         <Link href={"/dashboard?tab=comments"}>
           <Button
             variant="ghost"
@@ -51,13 +60,6 @@ const DashboardNavbar = () => {
             Bình luận
           </Button>
         </Link>
-        <Button
-          variant="ghost"
-          className="rounded-none focus:border-b-2 focus:border-black"
-        >
-          <Settings className="hidden md:inline-block mr-2 h-4 w-4" />
-          Cài đặt
-        </Button>
       </nav>
     </div>
   );

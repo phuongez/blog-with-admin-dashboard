@@ -19,13 +19,12 @@ import {
   Link as LinkIcon,
   Image as ImageIcon,
   Minus,
-  TableOfContents,
   Youtube,
   ExternalLink,
 } from "lucide-react";
 import LinkPopover from "./editor/LinkPopover";
 import { IframeEmbed } from "./editor/extensions/IframeEmbed";
-import { sanitizeURL } from "@/lib/sanitize";
+import TextAlign from "@tiptap/extension-text-align";
 import { CustomHeading } from "./editor/extensions/CustomHeading";
 import slugify from "slugify";
 import { YoutubeEmbed } from "./editor/extensions/YoutubeEmbed";
@@ -53,6 +52,9 @@ export default function TiptapEditor({ content, onChange }: Props) {
       HorizontalRule,
       IframeEmbed,
       YoutubeEmbed,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {

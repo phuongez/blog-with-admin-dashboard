@@ -212,7 +212,7 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
               </label>
             </div>
 
-            <div className="space-y-2 flex flex-col items-center">
+            <div className="space-y-2 flex flex-col">
               <Label htmlFor="content">Nội dung bài viết</Label>
               <TiptapEditor content={content} onChange={setContent} />
               {formState.errors.content && (
@@ -224,10 +224,10 @@ const EditArticlePage: React.FC<EditPropsPage> = ({ article }) => {
 
             <div className="flex justify-end gap-4">
               <Button type="button" variant="outline">
-                Discard Changes
+                Huỷ bỏ
               </Button>
               <Button disabled={isPending} type="submit">
-                {isPending ? "Loading..." : "Update Article"}
+                {isPending ? "Loading..." : "Cập nhật bài viết"}
               </Button>
             </div>
           </form>

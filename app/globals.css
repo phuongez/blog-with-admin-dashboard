@@ -58,11 +58,11 @@
   }
 }
 
-body {
+article body {
   line-height: 1.5 !important;
 }
 
-p {
+article p {
   line-height: 2 !important;
   margin-bottom: 0.5rem !important;
 }
@@ -89,6 +89,8 @@ article > h2 {
 article h1 strong {
   font-weight: 600 !important;
 }
+
+/* Tiptap editor */
 
 @layer base {
   * {

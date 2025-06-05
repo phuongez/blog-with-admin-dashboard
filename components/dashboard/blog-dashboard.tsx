@@ -151,7 +151,7 @@ export function BlogDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users?.map((user: any) => (
+              {users?.slice(0, 10).map((user: any) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">

@@ -68,7 +68,7 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {articles.slice(0, 5).map((article) => (
+                {articles.slice(0, 10).map((article) => (
                   <TableRow key={article.id}>
                     <TableCell className="font-medium">
                       {article.title}

@@ -22,17 +22,26 @@ export function createGmailLink({
 }
 
 export async function syncUserRoleToClerk(clerkUserId: string) {
-  // 1. Lấy user trong Prisma theo Clerk ID
   const user = await prisma.user.findUnique({
     where: { clerkUserId },
   });
 
   if (!user) throw new Error("User not found in DB");
 
-  // 2. Cập nhật role vào Clerk publicMetadata
+  const clerkUser = await clerkClient.users.getUser(clerkUserId);
+  const currentRole = clerkUser.publicMetadata?.role;
+  const alreadySynced = clerkUser.publicMetadata?.roleSynced === true;
+
+  if (currentRole === user.role && alreadySynced) {
+    // Không cần cập nhật
+    return;
+  }
+
+  // Cập nhật role + đánh dấu đã sync
   await clerkClient.users.updateUserMetadata(clerkUserId, {
     publicMetadata: {
-      role: user.role, // enum: ADMIN, AUTHOR, USER
+      role: user.role,
+      roleSynced: true,
     },
   });
 }
