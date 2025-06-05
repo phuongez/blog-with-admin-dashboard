@@ -150,7 +150,10 @@ export async function ArticleDetailPage({
           {article.showToc && toc.length >= 3 && <TableOfContents toc={toc} />}
 
           <ArticleContent
-            article={article}
+            article={{
+              ...article,
+              price: article.price ?? undefined, // chuyển null thành undefined
+            }}
             canView={canView}
             userId={user?.id || null}
           />
