@@ -23,15 +23,6 @@ export async function POST(req: Request) {
     if (!user)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // const slugBase = title
-    //   .normalize("NFD")
-    //   .replace(/[\u0300-\u036f]/g, "")
-    //   .toLowerCase()
-    //   .trim()
-    //   .replace(/[^a-z0-9\s-]/g, "")
-    //   .replace(/\s+/g, "-");
-
-    // let slug = slugBase;
     const existing = await prisma.articles.findUnique({ where: { slug } });
     if (existing) {
       return NextResponse.json(
