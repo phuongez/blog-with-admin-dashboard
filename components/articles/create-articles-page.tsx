@@ -5,16 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-// import "react-quill-new/dist/quill.snow.css";
-// import dynamic from "next/dynamic";
 import dynamic from "next/dynamic";
 const TiptapEditor = dynamic(() => import("@/components/TiptapEditor"), {
   ssr: false,
 });
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-
-// const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 export function CreateArticlePage() {
   const [content, setContent] = useState("");

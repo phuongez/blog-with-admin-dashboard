@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../../dark-mode";
 import Link from "next/link";
@@ -28,7 +28,9 @@ export function Navbar() {
             </Link>
             {/* Search Bar (Desktop) */}
             <div className="hidden md:block flex-1">
-              <SearchInput />
+              <Suspense fallback={<div>Đang tải tìm kiếm...</div>}>
+                <SearchInput />
+              </Suspense>
             </div>
 
             {/* Right Section - Search & Actions */}
