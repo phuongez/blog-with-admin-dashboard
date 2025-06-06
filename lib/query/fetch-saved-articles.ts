@@ -34,6 +34,7 @@ export async function fetchSavedArticles(
                 name: true,
                 imageUrl: true,
                 email: true,
+                bio: true,
               },
             },
           },
