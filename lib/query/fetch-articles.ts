@@ -28,7 +28,7 @@ export async function fetchArticleByQuery(
       where: whereClause,
       include: {
         author: {
-          select: { name: true, imageUrl: true, email: true },
+          select: { id: true, name: true, imageUrl: true, email: true },
         },
       },
       orderBy: {

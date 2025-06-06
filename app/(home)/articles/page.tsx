@@ -9,9 +9,9 @@ import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkelet
 const ITEMS_PER_PAGE = 6;
 
 export default async function Page({ searchParams }: { searchParams?: any }) {
-  const searchText = searchParams?.search || "";
-  const category = searchParams?.category || "";
-  const currentPage = Number(searchParams?.page) || 1;
+  const searchText = (await searchParams?.search) || "";
+  const category = (await searchParams?.category) || "";
+  const currentPage = (await Number(searchParams?.page)) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 

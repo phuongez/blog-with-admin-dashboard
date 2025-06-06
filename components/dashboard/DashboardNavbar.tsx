@@ -1,14 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
-import {
-  BarChart,
-  FileText,
-  LayoutDashboard,
-  MessageCircle,
-  Settings,
-} from "lucide-react";
+import { FileText, LayoutDashboard, MessageCircle } from "lucide-react";
 import Link from "next/link";
 const DashboardNavbar = () => {
   return (

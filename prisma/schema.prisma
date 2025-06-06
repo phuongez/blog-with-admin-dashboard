@@ -15,6 +15,7 @@ model User {
   imageUrl      String?
   role          Role              @default(USER)
   createdAt     DateTime          @default(now())
+  bio           String?
   purchases     ArticlePurchase[]
   articles      Articles[]
   comments      Comment[]
