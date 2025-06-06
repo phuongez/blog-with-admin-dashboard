@@ -3,12 +3,30 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
+type FormData = {
+  gender: "male" | "female";
+  weight: number;
+  height: number;
+  age: number;
+  activity: number;
+  goal: "maintain" | "lose" | "gain";
+};
+
+type Result = {
+  bmr: number;
+  tdee: number;
+  calories: number;
+  protein: number;
+  fat: number;
+  carb: number;
+};
+
 export default function PersonalForm({
   onCalculate,
 }: {
-  onCalculate: (data: any) => void;
+  onCalculate: (data: Result) => void;
 }) {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormData>({
     gender: "male",
     weight: 60,
     height: 170,
@@ -17,19 +35,32 @@ export default function PersonalForm({
     goal: "maintain",
   });
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === "weight" || name === "height" || name === "age"
+          ? parseInt(value)
+          : name === "activity"
+          ? parseFloat(value)
+          : value,
+    }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { weight, height, age, gender, activity, goal } = form;
+
     const bmr =
       gender === "male"
         ? 10 * weight + 6.25 * height - 5 * age + 5
         : 10 * weight + 6.25 * height - 5 * age - 161;
-    const tdee = bmr * parseFloat(activity);
+
+    const tdee = bmr * activity;
+
     let calories = tdee;
     if (goal === "lose") calories -= 300;
     if (goal === "gain") calories += 300;
@@ -38,7 +69,14 @@ export default function PersonalForm({
     const fat = (calories * 0.25) / 9;
     const carb = (calories * 0.5) / 4;
 
-    onCalculate({ bmr, tdee, calories, protein, fat, carb });
+    onCalculate({
+      bmr,
+      tdee,
+      calories: Math.round(calories),
+      protein: Math.round(protein),
+      fat: Math.round(fat),
+      carb: Math.round(carb),
+    });
   };
 
   return (
