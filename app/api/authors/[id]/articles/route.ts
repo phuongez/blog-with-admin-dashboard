@@ -3,10 +3,7 @@ import { NextResponse } from "next/server";
 
 const PAGE_SIZE = 6;
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1");
 
