@@ -32,7 +32,10 @@ export async function POST(req: NextRequest) {
     if (exists) return NextResponse.json({ success: true });
 
     // Phân tích content: "BLOG-{articleId}-{userId}"
-    const match = content.match(/BLOGAXC(.+)UXC(.+)/);
+    const cleanContent = content
+      .split(".")
+      .find((part) => part.includes("BLOGAXC"));
+    const match = cleanContent.match(/BLOGAXC(.+)UXC(.+)/);
     if (!match) {
       console.error(
         "Content không đúng định dạng BLOGAXC{articleId}UXC{userId}",
