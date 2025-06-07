@@ -98,7 +98,7 @@ export default function ArticleContent({ article, canView, userId }: Props) {
                 <li>Số tài khoản: 96247AT7991</li>
                 <li>Chủ tài khoản: Vũ Anh Tú</li>
                 <li>
-                  Nội dung: BLOG-{article.id}-{userId}
+                  Nội dung: BLOG.{article.id}.{userId}
                 </li>
               </ul>
               <button

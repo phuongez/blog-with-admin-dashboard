@@ -27,10 +27,10 @@ export async function POST(req: NextRequest) {
     if (exists) return NextResponse.json({ success: true });
 
     // Phân tích content: "BLOG-{articleId}-{userId}"
-    const match = content.match(/BLOG-(.+)-(.+)/);
+    const match = content.match(/BLOG.(.+).(.+)/);
     if (!match) {
       console.error(
-        "Content không đúng định dạng BLOG-{articleId}-{userId}",
+        "Content không đúng định dạng BLOG.{articleId}.{userId}",
         content
       );
       return NextResponse.json({ success: false });
