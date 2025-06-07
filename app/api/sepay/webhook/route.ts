@@ -62,15 +62,13 @@ export async function POST(req: NextRequest) {
       select: { price: true },
     });
 
-    if (!article || article.price === null) {
-      console.error("❌ Không tìm thấy bài viết hoặc chưa có giá:", articleId);
+    if (!article) {
+      console.error("❌ Không tìm thấy bài viết:", articleId);
       return NextResponse.json({
         success: false,
-        error: "Article not found or missing price",
+        error: "Article not found",
       });
     }
-
-    const price = article.price;
 
     // Ghi ArticlePurchase nếu chưa có
     await prisma.articlePurchase.upsert({
@@ -84,7 +82,7 @@ export async function POST(req: NextRequest) {
       create: {
         userId,
         articleId,
-        priceAtPurchase: price,
+        priceAtPurchase: amount,
       },
     });
 

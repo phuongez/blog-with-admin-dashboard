@@ -33,7 +33,7 @@ model Articles {
   authorId      String
   createdAt     DateTime          @default(now())
   isPaid        Boolean           @default(false)
-  price         Int?
+  price         Int?           
   subtitle      String?
   slug          String            @unique
   showToc       Boolean           @default(false)
