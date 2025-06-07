@@ -9,7 +9,13 @@ export async function POST(req: NextRequest) {
   const bank = process.env.SEPAY_BANK!;
   const description = `BLOG-${articleId}-${userId}`;
 
-  const qrUrl = generateSePayQR({ bank, acc, amount: price, description });
+  const qrUrl = generateSePayQR({
+    bank,
+    acc,
+    amount: price,
+    articleId,
+    userId,
+  });
 
   return NextResponse.json({ qrUrl });
 }
