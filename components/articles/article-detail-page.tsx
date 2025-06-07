@@ -144,7 +144,6 @@ export async function ArticleDetailPage({
                 </p>
               </div>
             </div>
-            {/* <div className="w-full h-[1px] bg-primary"></div> */}
           </header>
 
           {article.showToc && toc.length >= 3 && <TableOfContents toc={toc} />}

@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { clerkClient } from "@clerk/clerk-sdk-node"; // ✅ dùng đúng SDK server
 
-export async function GET(_: Request, { params }: any) {
+export async function GET(_: Request, { params }: { params: { id: string } }) {
   const user = await prisma.user.findUnique({
     where: { id: params.id },
     select: {
@@ -17,5 +18,16 @@ export async function GET(_: Request, { params }: any) {
     return new NextResponse("User not found", { status: 404 });
   }
 
-  return NextResponse.json(user);
+  let socialLinks = null;
+  try {
+    const clerkUser = await clerkClient.users.getUser(user.clerkUserId);
+    socialLinks = clerkUser.publicMetadata?.socialLinks || null;
+  } catch (error) {
+    console.warn("Không thể lấy dữ liệu từ Clerk:", error);
+  }
+
+  return NextResponse.json({
+    ...user,
+    socialLinks,
+  });
 }

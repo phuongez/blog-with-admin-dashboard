@@ -67,11 +67,6 @@ export default async function Page({
 
   const { userId: clerkUserId } = await auth();
 
-  // Nếu chưa đăng nhập, không được xem nếu bài viết trả phí
-  // if (!clerkUserId && article.isPaid) {
-  //   return redirect("/sign-in");
-  // }
-
   const user = clerkUserId
     ? await prisma.user.findUnique({ where: { clerkUserId } })
     : null;

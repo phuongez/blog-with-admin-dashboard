@@ -53,6 +53,15 @@ const DashboardNavbar = () => {
             Bình luận
           </Button>
         </Link>
+        <Link href={"/dashboard?tab=socials"}>
+          <Button
+            variant="ghost"
+            className="rounded-none focus:border-b-2 focus:border-black"
+          >
+            <MessageCircle className="hidden md:inline-block mr-2 h-4 w-4" />
+            Tài khoản
+          </Button>
+        </Link>
       </nav>
     </div>
   );

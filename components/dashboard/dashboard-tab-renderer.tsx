@@ -8,6 +8,7 @@ import DashComments from "@/components/dashboard/DashComments";
 import DashPosts from "@/components/dashboard/DashPosts";
 import DashProfile from "@/components/dashboard/DashProfile";
 import DashUsers from "@/components/dashboard/DashUsers";
+import DashSocials from "./DashSocials";
 
 export function DashboardTabRenderer() {
   const [tab, setTab] = useState("dash");
@@ -26,6 +27,7 @@ export function DashboardTabRenderer() {
       {tab === "comments" && <DashComments />}
       {tab === "users" && <DashUsers />}
       {tab === "dash" && <BlogDashboard />}
+      {tab === "socials" && <DashSocials />}
     </div>
   );
 }

@@ -94,8 +94,8 @@ export default function ArticleContent({ article, canView, userId }: Props) {
               </p>
               <p className="text-sm mb-2">Thông tin chuyển khoản:</p>
               <ul className="text-sm mb-4 list-disc list-inside">
-                <li>Ngân hàng: Vietcombank</li>
-                <li>Số tài khoản: 0711000301859</li>
+                <li>Ngân hàng: BIDV</li>
+                <li>Số tài khoản: 8870436905</li>
                 <li>Chủ tài khoản: Vũ Anh Tú</li>
                 <li>
                   Nội dung: BLOG-{article.id}-{userId}
