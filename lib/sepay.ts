@@ -1,18 +1,24 @@
 // lib/sepay.ts
+
 export function generateSePayQR({
   bank,
   acc,
   amount,
-  description,
+  articleId,
+  userId,
 }: {
   bank: string;
   acc: string;
   amount: number;
-  description: string;
+  articleId: string;
+  userId: string;
 }) {
+  const description = `BLOG-${articleId}-${userId}`; // 👈 chuẩn ghi chú
   const base = "https://qr.sepay.vn/img";
+
   const url = `${base}?bank=${bank}&acc=${acc}&amount=${amount}&des=${encodeURIComponent(
     description
   )}&template=compact`;
+
   return url;
 }
