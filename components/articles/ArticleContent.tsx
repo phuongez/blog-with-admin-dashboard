@@ -85,7 +85,7 @@ export default function ArticleContent({ article, canView, userId }: Props) {
       {/* Modal: Thanh toán QR */}
       {userId && showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-xl p-6 max-w-2xl w-full relative flex flex-wrap gap-6 shadow-lg">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full relative flex flex-col gap-6 shadow-lg">
             {/* Bên trái: Thông tin thanh toán */}
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-2">Bài viết trả phí</h2>
@@ -93,7 +93,7 @@ export default function ArticleContent({ article, canView, userId }: Props) {
                 Giá: <strong>20.000đ</strong>
               </p>
               <p className="text-sm mb-2">Thông tin chuyển khoản:</p>
-              <ul className="text-sm mb-4 list-disc list-inside">
+              <ul className="text-sm mb-4 list-disc list-inside flex flex-col flex-wrap">
                 <li>Ngân hàng: BIDV</li>
                 <li>Số tài khoản: 96247AT7991</li>
                 <li>Chủ tài khoản: Vũ Anh Tú</li>
@@ -111,7 +111,7 @@ export default function ArticleContent({ article, canView, userId }: Props) {
               </button>
             </div>
             {/* Bên phải: QR code */}
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center min-w-[40px]">
               {qrUrl ? (
                 <Image
                   src={qrUrl}

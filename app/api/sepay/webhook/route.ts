@@ -32,9 +32,15 @@ export async function POST(req: NextRequest) {
     if (exists) return NextResponse.json({ success: true });
 
     // Phân tích content: "BLOG-{articleId}-{userId}"
-    const cleanContent = content
-      .split(".")
-      .find((part) => part.includes("BLOGAXC"));
+    const parts: string[] = content.split(".");
+    const cleanContent = parts.find((part) => part.includes("BLOGAXC"));
+    if (!cleanContent) {
+      console.error(
+        "Không tìm thấy chuỗi có chứa BLOGAXC trong content:",
+        content
+      );
+      return NextResponse.json({ success: false });
+    }
     const match = cleanContent.match(/BLOGAXC(.+)UXC(.+)/);
     if (!match) {
       console.error(
