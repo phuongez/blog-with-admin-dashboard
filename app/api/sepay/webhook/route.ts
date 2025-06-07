@@ -3,6 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  const authHeader = req.headers.get("authorization");
+  const expectedKey = `Apikey ${process.env.SEPAY_API_KEY}`;
+
+  if (authHeader !== expectedKey) {
+    console.error("Không đúng key");
+    return NextResponse.json({ success: false });
+  }
   try {
     const body = await req.json();
     const { content, transferAmount: amount, id: transactionId } = body;
