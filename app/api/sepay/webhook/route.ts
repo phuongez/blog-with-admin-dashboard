@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  console.log("📡 Webhook handler đã chạy!");
   const authHeader = req.headers.get("authorization");
+  console.log("⚠️ Tạm bỏ qua kiểm tra API Key. Header nhận được:", authHeader);
   const expectedKey = `Apikey ${process.env.SEPAY_API_KEY}`;
+  console.log("SePay gửi:", authHeader);
+  console.log("Backend mong đợi:", expectedKey);
 
   if (authHeader !== expectedKey) {
     console.error("Không đúng key");
@@ -12,6 +16,7 @@ export async function POST(req: NextRequest) {
   }
   try {
     const body = await req.json();
+    console.log("📥 Dữ liệu webhook nhận:", body);
     const { content, transferAmount: amount, id: transactionId } = body;
 
     // Kiểm tra dữ liệu cơ bản
