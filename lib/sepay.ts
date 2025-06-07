@@ -13,7 +13,7 @@ export function generateSePayQR({
   articleId: string;
   userId: string;
 }) {
-  const description = `BLOG.${articleId}.${userId}`;
+  const description = `BLOGAXC${articleId}UXC${userId}`;
   const base = "https://qr.sepay.vn/img";
 
   const url = `${base}?bank=${bank}&acc=${acc}&amount=${amount}&des=${encodeURIComponent(
