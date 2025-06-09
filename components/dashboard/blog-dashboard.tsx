@@ -69,7 +69,7 @@ export function BlogDashboard() {
   return (
     <main className="flex-1 p-4 md:p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+      <div className="flex flex-col gap-4 md:flex-row justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground text-center md:text-left">
             Blog Dashboard
@@ -135,7 +135,7 @@ export function BlogDashboard() {
       <div className="md:flex gap-4">
         {/* Người đăng kí mới */}
 
-        <div className="md:w-[30%] rounded-xl border bg-card text-card-foreground shadow p-4 mb-8">
+        <div className="md:w-[30%] rounded-xl border bg-card text-card-foreground shadow p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Người dùng mới</h2>
             <Button asChild>

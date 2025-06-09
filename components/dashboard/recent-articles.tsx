@@ -44,7 +44,7 @@ const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
     <Card className="mb-8 w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Bài viết mới</CardTitle>
+          <CardTitle className="text-lg p-0">Bài viết mới</CardTitle>
           <Link href="/articles">
             <Button variant="ghost" size="sm" className="text-muted-foreground">
               Xem tất cả →

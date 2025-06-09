@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { revalidatePath } from "next/cache";
+import { sub } from "date-fns";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,6 +16,7 @@ cloudinary.config({
 
 const updateArticleSchema = z.object({
   title: z.string().min(3).max(100),
+  subtitle: z.string().min(3),
   category: z.string().min(3).max(50),
   content: z.string().min(10),
   isPaid: z.string().refine((val) => val === "paid" || val === "free", {
@@ -49,6 +51,7 @@ export const updateArticles = async (
 ): Promise<UpdateArticleFormState> => {
   const result = updateArticleSchema.safeParse({
     title: formData.get("title"),
+    subtitle: formData.get("subtitle"),
     category: formData.get("category"),
     content: formData.get("content"),
     isPaid: formData.get("isPaid"),
@@ -143,6 +146,7 @@ export const updateArticles = async (
       where: { id: articleId },
       data: {
         title: result.data.title,
+        subtitle: result.data.subtitle,
         category: result.data.category,
         content: result.data.content,
         featuredImage: imageUrl,

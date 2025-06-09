@@ -96,10 +96,10 @@ export async function TopArticles() {
                   {article.title}
                 </h1>
               </Link>
-              <h2 className="relative mt-4 text-lg text-gray-600 dark:text-gray-300">
+              <h2 className="relative mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-300">
                 {article.subtitle}
                 <Link href={`/articles/${article.slug}`}>
-                  <span className="font-bold pl-2 mb-0 text-sm text-primary">
+                  <span className="font-bold pl-2 mb-0 text-sm sm:text-base text-primary">
                     Xem tiếp
                   </span>
                 </Link>

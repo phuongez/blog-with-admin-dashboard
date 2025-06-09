@@ -46,13 +46,21 @@ const ArticleCard = ({ article }: any) => {
 
         {/* Article Title */}
         <Link href={`/articles/${article.slug}`} className="block">
-          <h3 className="text-xl font-semibold text-foreground mb-2 hover:underline">
+          <h1 className="text-xl font-semibold text-foreground mb-2 hover:underline">
             {article.title}
-          </h3>
+          </h1>
         </Link>
+        <h2 className="relative mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-2">
+          {article.subtitle}
+          <Link href={`/articles/${article.slug}`}>
+            <span className="font-bold pl-2 mb-0 text-sm sm:text-base text-primary">
+              Xem tiếp
+            </span>
+          </Link>
+        </h2>
 
         {/* Category & Read time */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-4">
           <p className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
             {slugToCategory(article.category)}
           </p>
@@ -62,7 +70,7 @@ const ArticleCard = ({ article }: any) => {
         </div>
 
         {/* Author & Metadata */}
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={article.author.imageUrl as string} />

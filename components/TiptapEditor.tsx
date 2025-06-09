@@ -164,7 +164,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
   return (
     <div>
       {/* Toolbar */}
-      <div className="fixed max-w-3xl mx-auto top-[12rem] left-0 right-0 z-50 bg-white/95 p-2 border-none flex flex-wrap gap-1 justify-start overflow-x-auto w-full sm:justify-center sm:overflow-visible">
+      <div className="fixed max-full mx-auto top-[12rem] left-0 right-0 z-50 bg-white bg-opacity-5 px-8 p-2 border-none flex flex-wrap gap-1 justify-start overflow-x-auto w-full sm:justify-center sm:overflow-visible">
         <button
           type="button"
           className="hover:bg-gray-50 p-2 rounded-sm"
