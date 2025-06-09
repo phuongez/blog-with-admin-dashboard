@@ -35,7 +35,7 @@ export default function CommentItem({
   });
 
   return (
-    <div className="mb-6 border-b pb-4">
+    <div id={`comment-${comment.id}`} className="mb-6 border-b pb-4">
       <div className="flex gap-4 items-center">
         <Avatar className="h-10 w-10">
           <AvatarImage src={comment.author.imageUrl || ""} />

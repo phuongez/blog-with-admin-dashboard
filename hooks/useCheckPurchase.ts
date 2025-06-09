@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 
 export function useCheckPurchase(articleId: string, userId: string) {
-  const [paid, setPaid] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      const res = await fetch(
-        `/api/check-purchase?articleId=${articleId}&userId=${userId}`
-      );
-      const { hasPurchased } = await res.json();
-      if (hasPurchased) {
-        setPaid(true);
-        clearInterval(interval);
-      }
-    }, 3000);
+    if (!articleId || !userId) return;
 
-    return () => clearInterval(interval);
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `/api/check-purchase?articleId=${articleId}&userId=${userId}`
+        );
+        const data = await res.json();
+        setHasPurchased(data.hasPurchased);
+      } catch (err) {
+        console.error("Lỗi khi kiểm tra mua bài:", err);
+      }
+    };
+
+    fetchData();
   }, [articleId, userId]);
 
-  return paid;
+  return hasPurchased;
 }

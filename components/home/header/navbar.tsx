@@ -1,11 +1,13 @@
 "use client";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../../dark-mode";
 import Link from "next/link";
 import { SignedOut, SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import SearchInput from "./search-input";
+import NotificationBell from "./NotificationBell";
+import { FileHeart } from "lucide-react";
 
 export function Navbar() {
   const { user } = useUser();
@@ -45,12 +47,18 @@ export function Navbar() {
 
               {userRole === "USER" && (
                 <Link href={"/myarticles"}>
-                  <Button>My Articles</Button>
+                  <Button className="hidden sm:block">My Articles</Button>
+                  <Button className="sm:hidden">
+                    <FileHeart />
+                  </Button>
                 </Link>
               )}
 
               {/* User Actions */}
               <SignedIn>
+                <div className="flex items-center gap-4">
+                  <NotificationBell />
+                </div>
                 <UserButton afterSignOutUrl="/" />
               </SignedIn>
               <SignedOut>

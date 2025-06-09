@@ -1,85 +1,86 @@
 import { fetchSavedArticles } from "@/lib/query/fetch-saved-articles";
-import React, { Suspense } from "react";
+import { fetchPurchasedArticles } from "@/lib/query/fetch-purchased-articles";
+import { MyArticlesTabs } from "@/components/myarticles/MyArticlesTabs";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import ArticleSearchInput from "@/components/articles/article-search-input";
-import { AllSavedArticles } from "@/components/articles/AllSavedArticles";
-import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkeleton";
 
 const ITEMS_PER_PAGE = 6;
 
 export default async function Page({ searchParams }: any) {
   const { userId } = await auth();
   if (!userId) return [];
+
   const user = await prisma.user.findUnique({
-    where: { clerkUserId: userId as string },
+    where: { clerkUserId: userId },
   });
 
-  const currentPage = (await Number(searchParams.page)) || 1;
-  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-  const take = ITEMS_PER_PAGE;
+  const tab = searchParams.tab || "saved";
+  const page = parseInt(searchParams.page) || 1;
+  const skip = (page - 1) * ITEMS_PER_PAGE;
 
-  const { articles, total } = await fetchSavedArticles(user, skip, take);
+  const saved = await fetchSavedArticles(user, skip, ITEMS_PER_PAGE);
+  const purchased = await fetchPurchasedArticles(user, skip, ITEMS_PER_PAGE);
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  const savedPagination = (
+    <Pagination total={saved.total} currentPage={page} tab="saved" />
+  );
+  const purchasedPagination = (
+    <Pagination total={purchased.total} currentPage={page} tab="purchased" />
+  );
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-12 space-y-6 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Các bài viết đã lưu
-          </h1>
-          <Suspense>
-            <ArticleSearchInput />
-          </Suspense>
-        </div>
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold mb-6">Bài viết của tôi</h1>
+      <MyArticlesTabs
+        saved={{ articles: saved.articles, pagination: savedPagination }}
+        purchased={{
+          articles: purchased.articles,
+          pagination: purchasedPagination,
+        }}
+      />
+    </div>
+  );
+}
 
-        {/* All Articles */}
-        <Suspense fallback={<AllArticlesPageSkeleton />}>
-          <AllSavedArticles articles={articles} />
-        </Suspense>
+function Pagination({
+  total,
+  currentPage,
+  tab,
+}: {
+  total: number;
+  currentPage: number;
+  tab: string;
+}) {
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  return (
+    <div className="mt-8 flex justify-center gap-2">
+      <Link href={`?tab=${tab}&page=${currentPage - 1}`}>
+        <Button variant="ghost" size="sm" disabled={currentPage === 1}>
+          ← Trước
+        </Button>
+      </Link>
 
-        {/* Pagination */}
-        <div className="mt-12 flex justify-center gap-2">
-          {/* Prev Button */}
-          <Link href={`?page=${currentPage - 1}`} passHref>
-            <Button variant="ghost" size="sm" disabled={currentPage === 1}>
-              ← Trước
-            </Button>
-          </Link>
-
-          {/* Page Numbers */}
-          {Array.from({ length: totalPages }).map((_, index) => {
-            const pageNum = index + 1;
-            return (
-              <Link key={pageNum} href={`?page=${pageNum}`} passHref>
-                <Button
-                  variant={currentPage === pageNum ? "destructive" : "ghost"}
-                  size="sm"
-                  disabled={currentPage === pageNum}
-                >
-                  {pageNum}
-                </Button>
-              </Link>
-            );
-          })}
-
-          {/* Next Button */}
-          <Link href={`?page=${currentPage + 1}`} passHref>
+      {Array.from({ length: totalPages }).map((_, i) => {
+        const pageNum = i + 1;
+        return (
+          <Link key={pageNum} href={`?tab=${tab}&page=${pageNum}`}>
             <Button
-              variant="ghost"
+              variant={pageNum === currentPage ? "destructive" : "ghost"}
               size="sm"
-              disabled={currentPage === totalPages}
             >
-              Sau →
+              {pageNum}
             </Button>
           </Link>
-        </div>
-      </main>
+        );
+      })}
+
+      <Link href={`?tab=${tab}&page=${currentPage + 1}`}>
+        <Button variant="ghost" size="sm" disabled={currentPage === totalPages}>
+          Sau →
+        </Button>
+      </Link>
     </div>
   );
 }

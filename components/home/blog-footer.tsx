@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail } from "lucide-react";
+import { Facebook, Mail, Youtube } from "lucide-react";
 import { Linkedin, Github, Twitter } from "lucide-react";
 
 export default function BlogFooter() {
@@ -22,17 +22,14 @@ export default function BlogFooter() {
               đam mê lối sống lành mạnh.
             </p>
 
-            <div className="mt-6 flex gap-2">
+            {/* <div className="mt-6 flex gap-2">
               <Button variant="ghost" size="icon">
-                <Twitter className="h-5 w-5 text-muted-foreground" />
+                <Facebook className="h-5 w-5 text-muted-foreground" />
               </Button>
               <Button variant="ghost" size="icon">
-                <Github className="h-5 w-5 text-muted-foreground" />
+                <Youtube className="h-5 w-5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon">
-                <Linkedin className="h-5 w-5 text-muted-foreground" />
-              </Button>
-            </div>
+            </div> */}
           </div>
 
           {/* Quick Links */}
@@ -111,26 +108,6 @@ export default function BlogFooter() {
                 </a>
               </li>
             </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div className="space-y-4 md:col-span-2 lg:col-span-2">
-            <h3 className="text-lg font-semibold text-foreground">
-              Đăng kí thông tin
-            </h3>
-            <form className="flex flex-col gap-4">
-              <div className="relative">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="pl-10 pr-4 py-6"
-                />
-                <Mail className="h-5 w-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-              </div>
-              <Button type="submit" className="w-full">
-                Đăng kí
-              </Button>
-            </form>
           </div>
         </div>
 

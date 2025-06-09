@@ -22,6 +22,7 @@ model User {
   likes         Like[]
   savedArticles SavedArticle[]
   transactions  TransactionLog[]
+  notifications Notification[]    @relation("UserNotifications")
 }
 
 model Articles {
@@ -33,7 +34,7 @@ model Articles {
   authorId      String
   createdAt     DateTime          @default(now())
   isPaid        Boolean           @default(false)
-  price         Int?           
+  price         Int?
   subtitle      String?
   slug          String            @unique
   showToc       Boolean           @default(false)
@@ -43,17 +44,37 @@ model Articles {
   likes         Like[]
   savedByUsers  SavedArticle[]
   transactions  TransactionLog[]
+  notifications Notification[]
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   body      String
   articleId String
   authorId  String
-  createdAt DateTime @default(now())
-  article   Articles @relation(fields: [articleId], references: [id])
-  author    User     @relation(fields: [authorId], references: [id])
+  parentId  String?   // cho phép trả lời
+  createdAt DateTime  @default(now())
+  article   Articles  @relation(fields: [articleId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
+  parent    Comment?  @relation("CommentToParent", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentToParent")
+  notifications Notification[]
 }
+
+model Notification {
+  id         String   @id @default(cuid())
+  type       String   // 'comment' | 'reply'
+  userId     String   // người nhận
+  articleId  String
+  commentId  String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], name: "UserNotifications")
+  comment    Comment  @relation(fields: [commentId], references: [id])
+  article    Articles @relation(fields: [articleId], references: [id]) // ✅ Thêm dòng này
+}
+
 
 model Like {
   id        String   @id @default(cuid())
