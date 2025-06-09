@@ -14,6 +14,7 @@ export async function TopArticles() {
       comments: true,
       author: {
         select: {
+          id: true,
           name: true,
           email: true,
           imageUrl: true,
@@ -56,61 +57,70 @@ export async function TopArticles() {
               Trả phí
             </div>
           )}
-          <div className="p-6">
+          <div className="p-6 flex flex-col lg:flex-row items-center gap-8">
+            {/* Image Container */}
             <Link
               href={`/articles/${article.slug}`}
-              className="flex flex-col lg:flex-row items-center gap-8"
+              className="relative mb-4 w-full lg:w-[50%] aspect-[4/3] overflow-hidden rounded-xl"
             >
-              {/* Image Container */}
-              <div className="relative mb-4 w-full lg:w-[50%] aspect-[4/3] overflow-hidden rounded-xl">
-                <Image
-                  src={article.featuredImage as string}
-                  alt={article.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="w-full lg:w-[50%]">
-                {/* Author Info */}
-                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={article.author.imageUrl as string} />
-                    <AvatarFallback>
-                      {article.author.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{article.author.name}</span>
-                  <span className="font-bold mb-0 text-sm text-primary">
-                    {slugToCategory(article.category)}
+              <Image
+                src={article.featuredImage as string}
+                alt={article.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover"
+              />
+            </Link>
+            <div className="w-full lg:w-[50%]">
+              {/* Author Info */}
+              <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={article.author.imageUrl as string} />
+                  <AvatarFallback>
+                    {article.author.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <Link href={`/authors/${article.author.id}`}>
+                  <span className="text-sm text-muted-foreground hover:underline">
+                    {article.author.name}
                   </span>
-                </div>
+                </Link>
+                <span className="font-bold mb-0 text-sm text-primary">
+                  {slugToCategory(article.category)}
+                </span>
+              </div>
 
-                {/* Article Title */}
+              {/* Article Title */}
+              <Link href={`/articles/${article.slug}`}>
                 <h1 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
                   {article.title}
                 </h1>
-                <h2 className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                  {article.subtitle}
-                </h2>
+              </Link>
+              <h2 className="relative mt-4 text-lg text-gray-600 dark:text-gray-300">
+                {article.subtitle}
+                <Link href={`/articles/${article.slug}`}>
+                  <span className="font-bold pl-2 mb-0 text-sm text-primary">
+                    Xem tiếp
+                  </span>
+                </Link>
+              </h2>
 
-                {/* Article Meta Info */}
-                <div className="mt-6 flex gap-3 items-center text-sm text-gray-500 dark:text-gray-400">
-                  <span>
-                    {new Date(article.createdAt).toLocaleString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                  <span className="text-primary">
-                    {getReadingTime(article.content)} phút đọc
-                  </span>
-                </div>
+              {/* Article Meta Info */}
+              <div className="mt-6 flex gap-3 items-center text-sm text-gray-500 dark:text-gray-400">
+                <span>
+                  {new Date(article.createdAt).toLocaleString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+                <span className="text-primary">
+                  {getReadingTime(article.content)} phút đọc
+                </span>
               </div>
-            </Link>
+            </div>
           </div>
         </Card>
       ))}

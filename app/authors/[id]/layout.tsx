@@ -1,3 +1,4 @@
+"use client";
 import { Navbar } from "@/components/home/header/navbar";
 import React, { ReactNode } from "react";
 

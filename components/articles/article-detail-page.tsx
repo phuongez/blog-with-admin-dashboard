@@ -12,6 +12,7 @@ import ArticleContent from "./ArticleContent";
 import { auth } from "@clerk/nextjs/server";
 import TableOfContents from "../TableOfContents";
 import * as cheerio from "cheerio";
+import Image from "next/image";
 
 export type ArticleDetailPageProps = {
   article: Prisma.ArticlesGetPayload<{
@@ -114,12 +115,16 @@ export async function ArticleDetailPage({
               </span>
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4 leading-[1.5]">
+            <h1 className="relative text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4 leading-[1.5]">
               {article.title}
               {article.isPaid && (
-                <span className="px-3" title="Bài viết trả phí">
-                  🔒
-                </span>
+                <Image
+                  src="https://res.cloudinary.com/ds30pv4oa/image/upload/v1749437881/paid_tag_lzjhjp.png"
+                  alt="paid"
+                  width={50}
+                  height={50}
+                  className="absolute -top-10 right-0"
+                />
               )}
             </h1>
 
@@ -169,8 +174,8 @@ export async function ArticleDetailPage({
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-8">
               <MessageCircle className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-semibold text-foreground">
-                {comments.length} Comments
+              <h2 className="text-xl md:text-2xl font-semibold text-foreground">
+                {comments.length} Bình luận
               </h2>
             </div>
 

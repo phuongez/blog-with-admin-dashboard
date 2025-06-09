@@ -3,7 +3,10 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/articles(.*)",
-  "/api/sepay/webhook",
+  "/authors(.*)",
+  "^/authors(/.*)?$", // ✅ trang hiển thị tác giả
+  "/api/user/:id",
+  "/api/authors/:id/articles",
   "/sign-in(.*)",
   "/sign-up(.*)",
 ]);

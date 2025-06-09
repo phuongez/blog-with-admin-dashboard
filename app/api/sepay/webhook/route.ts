@@ -3,16 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  console.log("📡 Webhook handler đã chạy!");
-
   const authHeader = req.headers.get("authorization");
   const expectedKey = `Apikey ${process.env.SEPAY_API_KEY}`;
-  console.log("⚠️ Header nhận được:", authHeader);
-  console.log("✅ API Key mong đợi:", expectedKey);
 
   // Bỏ qua kiểm tra trong quá trình dev nếu muốn
   if (authHeader !== expectedKey) {
-    console.error("❌ Không đúng API key");
     return NextResponse.json({
       success: false,
       error: "Invalid API key",
@@ -21,12 +16,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    console.log("📥 Dữ liệu webhook nhận:", body);
 
     const { content, transferAmount: amount, id: transactionId } = body;
 
     if (!content || !amount || !transactionId) {
-      console.error("❌ Thiếu dữ liệu cần thiết trong payload");
       return NextResponse.json({
         success: false,
         error: "Missing content, amount or transactionId",
@@ -45,7 +38,6 @@ export async function POST(req: NextRequest) {
     // Tìm và tách articleId + userId
     const match = content.match(/BLOGAXC([a-z0-9]+)UXC([a-z0-9]+)/i);
     if (!match) {
-      console.error("❌ Không tìm thấy định dạng BLOGAXC...UXC...", content);
       return NextResponse.json({
         success: false,
         error: "Invalid content format",
@@ -63,7 +55,6 @@ export async function POST(req: NextRequest) {
     });
 
     if (!article) {
-      console.error("❌ Không tìm thấy bài viết:", articleId);
       return NextResponse.json({
         success: false,
         error: "Article not found",
@@ -97,7 +88,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("✅ Đã ghi nhận thanh toán thành công");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("🔥 Lỗi xử lý webhook:", error);

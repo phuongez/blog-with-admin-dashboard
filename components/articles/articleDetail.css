@@ -12,3 +12,16 @@ h2 a {
 element.style {
   background-color: #6366f1 !important;
 }
+
+@media screen and (max-width: 500px) {
+  p {
+    margin-top: 0rem !important;
+  }
+  p span {
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+  }
+  h2 span {
+    font-size: 1.3rem !important;
+  }
+}

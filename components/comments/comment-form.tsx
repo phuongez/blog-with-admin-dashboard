@@ -30,7 +30,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
         </Avatar>
         <div className="flex-1">
           <Input
-            placeholder="Add a comment..."
+            placeholder="Để lại bình luận..."
             name="body"
             className="py-6 text-base"
           />
@@ -41,7 +41,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
           )}
           <div className="mt-4 flex justify-end">
             <Button disabled={isPending || !isSignedIn} type="submit">
-              {isPending ? "Loading..." : "Post Comment"}
+              {isPending ? "Loading..." : "Bình luận"}
             </Button>
           </div>
           {formState.errors.formErrors && (

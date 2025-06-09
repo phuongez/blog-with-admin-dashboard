@@ -58,9 +58,11 @@ export function Navbar() {
                   <SignInButton mode="modal">
                     <Button variant="outline">Đăng nhập</Button>
                   </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button>Đăng kí</Button>
-                  </SignUpButton>
+                  <div className="hidden md:block">
+                    <SignUpButton mode="modal">
+                      <Button>Đăng kí</Button>
+                    </SignUpButton>
+                  </div>
                 </div>
               </SignedOut>
             </div>

@@ -31,7 +31,7 @@ const CATEGORIES = [
 
 export default function AuthorPage() {
   const { id: authorId } = useParams();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const searchParams = useSearchParams();
 
   const page = parseInt(searchParams.get("page") || "1");
@@ -71,7 +71,7 @@ export default function AuthorPage() {
 
   if (!author) return <p className="text-center py-8">Đang tải tác giả...</p>;
 
-  const isOwner = user?.id === author?.clerkUserId;
+  const isOwner = isSignedIn && user?.id === author?.clerkUserId;
   const socialLinks = author.socialLinks || {};
 
   const socialIcons = [
