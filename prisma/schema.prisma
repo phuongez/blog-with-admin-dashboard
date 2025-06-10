@@ -23,6 +23,20 @@ model User {
   savedArticles SavedArticle[]
   transactions  TransactionLog[]
   notifications Notification[]    @relation("UserNotifications")
+  fitnessHistory UserProfileHistory[]
+}
+
+model UserProfileHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  gender    String
+  weight    Int
+  height    Int
+  age       Int
+  bodyfat   Float
+  activity  Float
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Articles {

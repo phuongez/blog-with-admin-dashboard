@@ -1,13 +1,20 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { useUser } from "@clerk/nextjs";
+
+// Types
 
 type FormData = {
   gender: "male" | "female";
   weight: number;
   height: number;
   age: number;
+  bodyfat: number;
   activity: number;
   goal: "maintain" | "lose" | "gain";
 };
@@ -26,14 +33,51 @@ export default function PersonalForm({
 }: {
   onCalculate: (data: Result) => void;
 }) {
+  const { user } = useUser();
+
   const [form, setForm] = useState<FormData>({
     gender: "male",
     weight: 60,
     height: 170,
     age: 25,
-    activity: 1.55,
+    bodyfat: 15,
+    activity: 1.375,
     goal: "maintain",
   });
+
+  const [bfCalculator, setBfCalculator] = useState(false);
+  const [waist, setWaist] = useState(0);
+  const [hip, setHip] = useState(0);
+  const [neck, setNeck] = useState(0);
+  const [navyBfp, setNavyBfp] = useState(0);
+  const [showBfImg, setShowBfImg] = useState(false);
+  const [saveInfo, setSaveInfo] = useState(false);
+  const [numberOfWorkouts, setNumberOfWorkouts] = useState(3);
+  const [workoutDuration, setWorkoutDuration] = useState(30);
+
+  // Load last saved profile if exists
+  useEffect(() => {
+    const fetchLastProfile = async () => {
+      if (!user?.id) return;
+      const res = await fetch(`/api/user/load-last-profile?userId=${user.id}`);
+      const data = await res.json();
+      if (data?.profile) {
+        const { gender, weight, height, age, bodyfat, activity, goal } =
+          data.profile;
+        setForm((prev) => ({
+          ...prev,
+          gender,
+          weight,
+          height,
+          age,
+          bodyfat,
+          activity,
+          goal,
+        }));
+      }
+    };
+    fetchLastProfile();
+  }, [user?.id]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -44,44 +88,79 @@ export default function PersonalForm({
       [name]:
         name === "weight" || name === "height" || name === "age"
           ? parseInt(value)
-          : name === "activity"
+          : name === "activity" || name === "bodyfat"
           ? parseFloat(value)
           : value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { weight, height, age, gender, activity, goal } = form;
+    const { weight, height, bodyfat, activity, goal } = form;
 
-    const bmr =
-      gender === "male"
-        ? 10 * weight + 6.25 * height - 5 * age + 5
-        : 10 * weight + 6.25 * height - 5 * age - 161;
+    const fatMass = weight * (bodyfat / 100);
+    const fatFreeMass = weight - fatMass;
+    const bmr = 370 + 21.6 * fatFreeMass;
+    const restDayTdee = bmr * activity * 1.1;
+    const workoutBurn = 0.1 * 45 * weight; // mặc định 45 phút tập nếu chưa mở rộng
+    const workoutDayTdee = restDayTdee + workoutBurn;
+    const averageTdee = (workoutDayTdee * 3 + restDayTdee * 4) / 7; // mặc định 3 buổi tập
 
-    const tdee = bmr * activity;
-
-    let calories = tdee;
-    if (goal === "lose") calories -= 300;
-    if (goal === "gain") calories += 300;
+    let calories = averageTdee;
+    if (goal === "lose") calories *= 0.8;
+    if (goal === "gain") calories *= 1.1;
 
     const protein = (calories * 0.25) / 4;
     const fat = (calories * 0.25) / 9;
     const carb = (calories * 0.5) / 4;
 
     onCalculate({
-      bmr,
-      tdee,
+      bmr: Math.round(bmr),
+      tdee: Math.round(averageTdee),
       calories: Math.round(calories),
       protein: Math.round(protein),
       fat: Math.round(fat),
       carb: Math.round(carb),
     });
+
+    if (saveInfo && user?.id) {
+      await fetch("/api/user/save-history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, ...form }),
+      });
+    }
   };
+
+  function calculateBodyFat(
+    gender: string,
+    waist: number,
+    hip: number,
+    neck: number,
+    height: number
+  ): void {
+    if (gender === "male") {
+      const bodyFat =
+        495 /
+          (1.0324 -
+            0.19077 * Math.log10(waist - neck) +
+            0.15456 * Math.log10(height)) -
+        450;
+      setNavyBfp(Math.round(bodyFat * 10) / 10);
+    } else if (gender === "female") {
+      const bodyFat =
+        495 /
+          (1.29579 -
+            0.35004 * Math.log10(waist + hip - neck) +
+            0.221 * Math.log10(height)) -
+        450;
+      setNavyBfp(Math.round(bodyFat * 10) / 10);
+    }
+  }
 
   return (
     <div className="p-4 md:p-8">
-      <Card>
+      <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-foreground text-center md:text-left">
             Nutrition Calculator
@@ -92,48 +171,272 @@ export default function PersonalForm({
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              name="age"
-              type="number"
-              value={form.age}
-              onChange={handleChange}
-              placeholder="Tuổi"
-            />
-            <Input
-              name="weight"
-              type="number"
-              value={form.weight}
-              onChange={handleChange}
-              placeholder="Cân nặng (kg)"
-            />
-            <Input
-              name="height"
-              type="number"
-              value={form.height}
-              onChange={handleChange}
-              placeholder="Chiều cao (cm)"
-            />
-            <select name="gender" value={form.gender} onChange={handleChange}>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-            </select>
-            <select
-              name="activity"
-              value={form.activity}
-              onChange={handleChange}
-            >
-              <option value="1.2">Ít vận động</option>
-              <option value="1.375">Vận động nhẹ</option>
-              <option value="1.55">Vận động vừa</option>
-              <option value="1.725">Vận động nhiều</option>
-            </select>
-            <select name="goal" value={form.goal} onChange={handleChange}>
-              <option value="maintain">Giữ cân</option>
-              <option value="lose">Giảm cân</option>
-              <option value="gain">Tăng cân</option>
-            </select>
-            <button type="submit">Tính toán</button>
+          <form onSubmit={handleSubmit} className="flex flex-col">
+            {/* Gender div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="gender" className="mr-2 w-[7rem]">
+                Giới tính
+              </Label>
+              <select
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                name="gender"
+                value={form.gender}
+                onChange={handleChange}
+              >
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            </div>
+            {/* Age div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="age" className="mr-2 w-[7rem]">
+                Tuổi
+              </Label>
+              <Input
+                name="age"
+                type="number"
+                value={form.age}
+                onChange={handleChange}
+                placeholder="Tuổi"
+                className="w-auto flex-1"
+              />
+            </div>
+            {/* Weight div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="weight" className="mr-2 w-[7rem]">
+                Cân nặng (kg)
+              </Label>
+              <Input
+                name="weight"
+                type="number"
+                value={form.weight}
+                onChange={handleChange}
+                placeholder="Cân nặng (kg)"
+                className="w-auto flex-1"
+              />
+            </div>
+            {/* Height div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="height" className="mr-2 w-[7rem]">
+                Chiều cao (cm)
+              </Label>
+              <Input
+                name="height"
+                type="number"
+                value={form.height}
+                onChange={handleChange}
+                placeholder="Chiều cao (cm)"
+                className="w-auto flex-1"
+              />
+            </div>
+            {/* Bodyfat percentage div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="bodyfat" className="mr-2 w-[7rem]">
+                Tỷ lệ mỡ (%)
+              </Label>
+              <Input
+                name="bodyfat"
+                type="number"
+                value={form.bodyfat}
+                onChange={handleChange}
+                placeholder="Tỷ lệ % mỡ cơ thể"
+                className="w-auto flex-1"
+              />
+            </div>
+            {/* Bodyfat calculator div */}
+            <div className="mt-6">
+              <div className="flex my-2 items-center">
+                <Label htmlFor="bfcalc" className="mr-2 w-fit italic">
+                  Công thức xác định tỷ lệ mỡ
+                </Label>
+                <input
+                  name="bfcalc"
+                  type="checkbox"
+                  checked={bfCalculator}
+                  onChange={(e) => setBfCalculator(e.target.checked)}
+                />
+              </div>
+              {bfCalculator && (
+                <div className="mb-6">
+                  <div className="flex gap-2 items-center mb-4">
+                    <Label htmlFor="waist" className="mr-2 w-[10rem]">
+                      Số đo eo tại rốn (cm)
+                    </Label>
+                    <Input
+                      name="waist"
+                      type="number"
+                      value={waist}
+                      onChange={(e) => setWaist(parseFloat(e.target.value))}
+                      placeholder="Số đo vòng eo"
+                      className="w-auto flex-1"
+                    />
+                  </div>
+                  <div className="flex gap-2 items-center mb-4">
+                    <Label htmlFor="hip" className="mr-2 w-[10rem]">
+                      Số đo mông (cm)
+                    </Label>
+                    <Input
+                      name="waist"
+                      type="number"
+                      value={hip}
+                      onChange={(e) => setHip(parseFloat(e.target.value))}
+                      placeholder="Số đo vòng mông"
+                      className="w-auto flex-1"
+                    />
+                  </div>
+                  <div className="flex gap-2 items-center mb-4">
+                    <Label htmlFor="neck" className="mr-2 w-[10rem]">
+                      Số đo cổ (cm)
+                    </Label>
+                    <Input
+                      name="neck"
+                      type="number"
+                      value={neck}
+                      onChange={(e) => setNeck(parseFloat(e.target.value))}
+                      placeholder="Số đo vòng cổ"
+                      className="w-auto flex-1"
+                    />
+                  </div>
+                  <div>
+                    <Button
+                      onClick={() =>
+                        calculateBodyFat(
+                          form.gender,
+                          waist,
+                          hip,
+                          neck,
+                          form.height
+                        )
+                      }
+                      size={"sm"}
+                      className="mb-4"
+                    >
+                      Tính tỷ lệ mỡ
+                    </Button>
+                    <p>Tỷ lệ mỡ cơ thể theo công thức Navy: {navyBfp}%</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Bodyfat image div */}
+            <div className="mt-6">
+              <div className="flex my-2 items-center">
+                <Label htmlFor="bfimage" className="mr-2 w-fit italic">
+                  Ảnh tham khảo các mức tỷ lệ mỡ
+                </Label>
+                <input
+                  name="bfimage"
+                  type="checkbox"
+                  checked={showBfImg}
+                  onChange={(e) => setShowBfImg(e.target.checked)}
+                />
+              </div>
+              {showBfImg && (
+                <div className="mb-6">
+                  {form.gender === "female" ? (
+                    <>
+                      <h2 className="py-2">Tỷ lệ tham khảo ở nữ giới</h2>
+                      <img
+                        src="https://res.cloudinary.com/ds30pv4oa/image/upload/v1749566498/5b98fe3c-d51b-4861-95f0-9868e4e8f4fa.png"
+                        alt="female percentage"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="py-2">Tỷ lệ tham khảo ở nam giới</h2>
+                      <img
+                        src="https://res.cloudinary.com/ds30pv4oa/image/upload/v1749566574/abb2ad2f-6bf5-475e-89bf-c524851d5844.png"
+                        alt="male percentage"
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Activity factor div */}
+            <div className="flex my-2 items-center mt-6">
+              <Label htmlFor="gender" className="mr-2 w-[10rem]">
+                Mức vận động
+              </Label>
+              <select
+                name="activity"
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                value={form.activity}
+                onChange={handleChange}
+              >
+                <option value="1.2">Ít vận động</option>
+                <option value="1.375">Vận động nhẹ</option>
+                <option value="1.55">Vận động trung bình</option>
+                <option value="1.725">Vận động nhiều</option>
+              </select>
+            </div>
+            <p className="text-red-700 text-sm">
+              Nếu bạn dành nhiều thời gian trong ngày ngồi tại chỗ và có tập
+              luyện tại phòng gym sẽ ở mức vận động nhẹ
+            </p>
+            {/* Goal div */}
+            <div className="flex my-2 items-center mt-6">
+              <Label htmlFor="gender" className="mr-2 w-[10rem] leading-6">
+                Mục tiêu của bạn là
+              </Label>
+              <select
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                name="goal"
+                value={form.goal}
+                onChange={handleChange}
+              >
+                <option value="maintain">Giữ cân</option>
+                <option value="lose">Giảm cân chậm</option>
+                <option value="gain">Tăng cân chậm</option>
+              </select>
+            </div>
+            {/* Workout Info div */}
+            {/* Activity factor div */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="workoutDay" className="mr-2 w-[10rem]">
+                Số buổi tập một tuần
+              </Label>
+              <select
+                name="workoutDay"
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                value={numberOfWorkouts}
+                onChange={(e) => setNumberOfWorkouts(parseInt(e.target.value))}
+              >
+                <option value="2">2 buổi</option>
+                <option value="3">3 buổi</option>
+                <option value="4">4 buổi</option>
+                <option value="5">5 buổi</option>
+                <option value="6">6 buổi</option>
+              </select>
+            </div>
+            <div className="flex my-2 items-center">
+              <Label htmlFor="workoutDuration" className="mr-2 w-[10rem]">
+                Thời gian tập mỗi buổi (phút)
+              </Label>
+              <Input
+                type="number"
+                name="workoutDuration"
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm w-auto flex-1"
+                value={workoutDuration}
+                onChange={(e) => setWorkoutDuration(parseInt(e.target.value))}
+              ></Input>
+            </div>
+
+            <div className="flex my-2 items-center">
+              <Label className="mr-2 w-fit italic">
+                Lưu thông tin vào lịch sử
+              </Label>
+              <input
+                type="checkbox"
+                checked={saveInfo}
+                onChange={(e) => setSaveInfo(e.target.checked)}
+                className=""
+              />
+            </div>
+            <Button className="mt-6 block" type="submit">
+              Tính toán
+            </Button>
           </form>
         </CardContent>
       </Card>
