@@ -7,7 +7,7 @@ import { SignedOut, SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import SearchInput from "./search-input";
 import NotificationBell from "./NotificationBell";
-import { FileHeart } from "lucide-react";
+import { FileHeart, LayoutDashboard } from "lucide-react";
 
 export function Navbar() {
   const { user } = useUser();
@@ -41,7 +41,10 @@ export function Navbar() {
               <ModeToggle />
               {(userRole === "ADMIN" || userRole === "AUTHOR") && (
                 <Link href="/dashboard">
-                  <Button>Dashboard</Button>
+                  <Button className="hidden sm:block">Dashboard</Button>
+                  <Button className="sm:hidden">
+                    <LayoutDashboard />
+                  </Button>
                 </Link>
               )}
 

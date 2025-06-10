@@ -31,14 +31,14 @@ export default function BlogFooter() {
               </Button>
             </div> */}
           </div>
-
+          <div></div>
           {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground">Khám phá</h3>
             <ul className="space-y-3">
               <li>
                 <a
-                  href="#"
+                  href="/articles"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Tất cả bài viết
@@ -46,15 +46,7 @@ export default function BlogFooter() {
               </li>
               <li>
                 <a
-                  href="#"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Chủ đề
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
+                  href="/authors"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Các tác giả
@@ -72,7 +64,7 @@ export default function BlogFooter() {
           </div>
 
           {/* Legal */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground">Pháp lý</h3>
             <ul className="space-y-3">
               <li>
@@ -108,7 +100,7 @@ export default function BlogFooter() {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Copyright */}
