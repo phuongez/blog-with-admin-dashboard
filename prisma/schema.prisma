@@ -8,21 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String            @id @default(cuid())
-  clerkUserId   String            @unique
-  email         String            @unique
-  name          String
-  imageUrl      String?
-  role          Role              @default(USER)
-  createdAt     DateTime          @default(now())
-  bio           String?
-  purchases     ArticlePurchase[]
-  articles      Articles[]
-  comments      Comment[]
-  likes         Like[]
-  savedArticles SavedArticle[]
-  transactions  TransactionLog[]
-  notifications Notification[]    @relation("UserNotifications")
+  id             String               @id @default(cuid())
+  clerkUserId    String               @unique
+  email          String               @unique
+  name           String
+  imageUrl       String?
+  role           Role                 @default(USER)
+  createdAt      DateTime             @default(now())
+  bio            String?
+  purchases      ArticlePurchase[]
+  articles       Articles[]
+  comments       Comment[]
+  likes          Like[]
+  savedArticles  SavedArticle[]
+  transactions   TransactionLog[]
+  notifications  Notification[]       @relation("UserNotifications")
   fitnessHistory UserProfileHistory[]
 }
 
@@ -36,7 +36,7 @@ model UserProfileHistory {
   bodyfat   Float
   activity  Float
   createdAt DateTime @default(now())
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Articles {
@@ -62,33 +62,32 @@ model Articles {
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  body      String
-  articleId String
-  authorId  String
-  parentId  String?   // cho phép trả lời
-  createdAt DateTime  @default(now())
-  article   Articles  @relation(fields: [articleId], references: [id])
-  author    User      @relation(fields: [authorId], references: [id])
-  parent    Comment?  @relation("CommentToParent", fields: [parentId], references: [id])
-  replies   Comment[] @relation("CommentToParent")
+  id            String         @id @default(cuid())
+  body          String
+  articleId     String
+  authorId      String
+  parentId      String? // cho phép trả lời
+  createdAt     DateTime       @default(now())
+  article       Articles       @relation(fields: [articleId], references: [id])
+  author        User           @relation(fields: [authorId], references: [id])
+  parent        Comment?       @relation("CommentToParent", fields: [parentId], references: [id])
+  replies       Comment[]      @relation("CommentToParent")
   notifications Notification[]
 }
 
 model Notification {
-  id         String   @id @default(cuid())
-  type       String   // 'comment' | 'reply'
-  userId     String   // người nhận
-  articleId  String
-  commentId  String
-  isRead     Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  type      String // 'comment' | 'reply'
+  userId    String // người nhận
+  articleId String
+  commentId String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id], name: "UserNotifications")
-  comment    Comment  @relation(fields: [commentId], references: [id])
-  article    Articles @relation(fields: [articleId], references: [id]) // ✅ Thêm dòng này
+  user    User     @relation(fields: [userId], references: [id], name: "UserNotifications")
+  comment Comment  @relation(fields: [commentId], references: [id])
+  article Articles @relation(fields: [articleId], references: [id]) // ✅ Thêm dòng này
 }
-
 
 model Like {
   id        String   @id @default(cuid())
@@ -134,6 +133,47 @@ model TransactionLog {
   userId    String
   article   Articles @relation(fields: [articleId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model MealPlan {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String // ví dụ: "Thực đơn tăng cân 01"
+  createdAt DateTime @default(now())
+
+  meals Meal[] // liên kết đến nhiều bữa
+}
+
+model Meal {
+  id         String     @id @default(uuid())
+  mealPlan   MealPlan   @relation(fields: [mealPlanId], references: [id])
+  mealPlanId String
+  title      String // ví dụ: "Bữa sáng"
+  items      MealItem[]
+}
+
+model MealItem {
+  id      String @id @default(uuid())
+  meal    Meal   @relation(fields: [mealId], references: [id])
+  mealId  String
+  name    String
+  amount  String
+  protein Float
+  carb    Float
+  fat     Float
+  fiber   Float
+}
+
+model Food {
+  id       String @id @default(uuid())
+  name     String
+  group    String
+  unit     String // ⬅ thêm dòng này
+  protein  Float
+  carb     Float
+  fat      Float
+  fiber    Float
+  calories Float?
 }
 
 enum Role {

@@ -6,6 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useUser } from "@clerk/nextjs";
+import { parse } from "path";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import Image from "next/image";
 
 // Types
 
@@ -54,6 +64,13 @@ export default function PersonalForm({
   const [saveInfo, setSaveInfo] = useState(false);
   const [numberOfWorkouts, setNumberOfWorkouts] = useState(3);
   const [workoutDuration, setWorkoutDuration] = useState(30);
+  const [proteinRatio, setProteinRatio] = useState(1.8);
+  const [fatPercentage, setFatPercentage] = useState(0.3);
+  const [showResult, setShowResult] = useState(false);
+  const [proteinIntake, setProteinIntake] = useState(0);
+  const [fatIntake, setFatIntake] = useState(0);
+  const [carbIntake, setCarbIntake] = useState(0);
+  const caloriesIntake = proteinIntake * 4 + fatIntake * 9 + carbIntake * 4;
 
   // Load last saved profile if exists
   useEffect(() => {
@@ -102,25 +119,31 @@ export default function PersonalForm({
     const fatFreeMass = weight - fatMass;
     const bmr = 370 + 21.6 * fatFreeMass;
     const restDayTdee = bmr * activity * 1.1;
-    const workoutBurn = 0.1 * 45 * weight; // mặc định 45 phút tập nếu chưa mở rộng
+    const workoutBurn = 0.1 * workoutDuration * weight;
     const workoutDayTdee = restDayTdee + workoutBurn;
-    const averageTdee = (workoutDayTdee * 3 + restDayTdee * 4) / 7; // mặc định 3 buổi tập
+    const averageTdee =
+      (workoutDayTdee * numberOfWorkouts +
+        restDayTdee * (7 - numberOfWorkouts)) /
+      7; // mặc định 3 buổi tập
 
     let calories = averageTdee;
     if (goal === "lose") calories *= 0.8;
     if (goal === "gain") calories *= 1.1;
 
-    const protein = (calories * 0.25) / 4;
-    const fat = (calories * 0.25) / 9;
-    const carb = (calories * 0.5) / 4;
+    setProteinIntake(weight * proteinRatio);
+    setFatIntake((calories * fatPercentage) / 9);
+    setCarbIntake((calories - proteinIntake * 4 - fatIntake * 9) / 4);
+
+    // Hiển thị kết quả tính toán
+    setShowResult(true);
 
     onCalculate({
       bmr: Math.round(bmr),
       tdee: Math.round(averageTdee),
       calories: Math.round(calories),
-      protein: Math.round(protein),
-      fat: Math.round(fat),
-      carb: Math.round(carb),
+      protein: Math.round(proteinIntake),
+      fat: Math.round(fatIntake),
+      carb: Math.round(carbIntake),
     });
 
     if (saveInfo && user?.id) {
@@ -319,7 +342,7 @@ export default function PersonalForm({
               )}
             </div>
             {/* Bodyfat image div */}
-            <div className="mt-6">
+            <div className="mt-2">
               <div className="flex my-2 items-center">
                 <Label htmlFor="bfimage" className="mr-2 w-fit italic">
                   Ảnh tham khảo các mức tỷ lệ mỡ
@@ -334,21 +357,29 @@ export default function PersonalForm({
               {showBfImg && (
                 <div className="mb-6">
                   {form.gender === "female" ? (
-                    <>
+                    <div className="w-full relative">
                       <h2 className="py-2">Tỷ lệ tham khảo ở nữ giới</h2>
-                      <img
+                      <Image
                         src="https://res.cloudinary.com/ds30pv4oa/image/upload/v1749566498/5b98fe3c-d51b-4861-95f0-9868e4e8f4fa.png"
                         alt="female percentage"
+                        width={0} // Không ép chiều rộng cố định
+                        height={0} // Không ép chiều cao cố định
+                        sizes="100vw" // Dành cho responsive
+                        className="w-full h-auto object-contain"
                       />
-                    </>
+                    </div>
                   ) : (
-                    <>
+                    <div className="w-full relative">
                       <h2 className="py-2">Tỷ lệ tham khảo ở nam giới</h2>
-                      <img
+                      <Image
                         src="https://res.cloudinary.com/ds30pv4oa/image/upload/v1749566574/abb2ad2f-6bf5-475e-89bf-c524851d5844.png"
                         alt="male percentage"
+                        width={0} // Không ép chiều rộng cố định
+                        height={0} // Không ép chiều cao cố định
+                        sizes="100vw" // Dành cho responsive
+                        className="w-full h-auto object-contain"
                       />
-                    </>
+                    </div>
                   )}
                 </div>
               )}
@@ -422,6 +453,42 @@ export default function PersonalForm({
                 onChange={(e) => setWorkoutDuration(parseInt(e.target.value))}
               ></Input>
             </div>
+            {/* Protein & Fat intake */}
+            <div className="flex my-2 items-center">
+              <Label htmlFor="proteinRatio" className="mr-2 w-[10rem]">
+                Mức protein
+              </Label>
+              <select
+                name="proteinRatio"
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                value={proteinRatio}
+                onChange={(e) => setProteinRatio(parseFloat(e.target.value))}
+              >
+                <option value="1.4">1.4 g protein/kg cân nặng</option>
+                <option value="1.5">1.5 g protein/kg cân nặng</option>
+                <option value="1.6">1.6 g protein/kg cân nặng</option>
+                <option value="1.7">1.7 g protein/kg cân nặng</option>
+                <option value="1.8">1.8 g protein/kg cân nặng</option>
+              </select>
+            </div>
+            <div className="flex my-2 items-center">
+              <Label htmlFor="fatPercentage" className="mr-2 w-[10rem]">
+                Mức fat
+              </Label>
+              <select
+                name="fatPercentage"
+                className=" h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                value={fatPercentage}
+                onChange={(e) => setFatPercentage(parseFloat(e.target.value))}
+              >
+                <option value="0.25">25% tổng năng lượng</option>
+                <option value="0.3">30% tổng năng lượng</option>
+                <option value="0.35">35% tổng năng lượng</option>
+                <option value="0.4">40% tổng năng lượng</option>
+                <option value="0.45">45% tổng năng lượng</option>
+                <option value="0.5">50% tổng năng lượng</option>
+              </select>
+            </div>
 
             <div className="flex my-2 items-center">
               <Label className="mr-2 w-fit italic">
@@ -434,6 +501,39 @@ export default function PersonalForm({
                 className=""
               />
             </div>
+
+            {showResult && (
+              <div className="mt-6">
+                <h2 className="font-bold">Thông số dinh dưỡng đề xuất</h2>
+                <Table className="table-fixed w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className=" text-black w-1/4 dark:text-white">
+                        Protein
+                      </TableHead>
+                      <TableHead className=" text-black w-1/4 dark:text-white">
+                        Carb
+                      </TableHead>
+                      <TableHead className=" text-black w-1/4 dark:text-white">
+                        Fat
+                      </TableHead>
+                      <TableHead className=" text-black w-1/4 dark:text-white">
+                        Calories
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>{proteinIntake}</TableCell>
+                      <TableCell>{Math.round(carbIntake)}</TableCell>
+                      <TableCell>{Math.round(fatIntake)}</TableCell>
+                      <TableCell>{Math.round(caloriesIntake)}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
             <Button className="mt-6 block" type="submit">
               Tính toán
             </Button>

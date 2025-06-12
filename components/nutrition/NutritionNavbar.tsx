@@ -2,6 +2,7 @@
 
 import { Button } from "../ui/button";
 import {
+  Apple,
   BookOpenCheck,
   Calculator,
   ChartNetwork,
@@ -9,7 +10,9 @@ import {
   Salad,
 } from "lucide-react";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 const NutritionNavbar = () => {
+  const { user } = useUser();
   return (
     <div className="w-full px-4 border-b flex justify-center">
       <nav className="flex items-center overflow-x-scroll">
@@ -41,6 +44,17 @@ const NutritionNavbar = () => {
             Tracking
           </Button>
         </Link>
+        {user?.publicMetadata?.role === "ADMIN" && (
+          <Link href={"/nutrition?tab=foodmanage"}>
+            <Button
+              variant="ghost"
+              className="rounded-none focus:border-b-2 focus:border-black"
+            >
+              <Apple className="hidden md:inline-block mr-2 h-4 w-4" />
+              Foods
+            </Button>
+          </Link>
+        )}
         <Link href={"/nutrition?tab=guide"}>
           <Button
             variant="ghost"
