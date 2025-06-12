@@ -3,8 +3,27 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
-  const foods = await prisma.food.findMany({ orderBy: { name: "asc" } });
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const group = searchParams.get("group");
+
+  const whereClause = group && group !== "All" ? { group } : {};
+
+  const foods = await prisma.food.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      name: true,
+      group: true,
+      unit: true,
+      protein: true,
+      carb: true,
+      fat: true,
+      fiber: true,
+      calories: true,
+    },
+  });
+
   return NextResponse.json(foods);
 }
 
