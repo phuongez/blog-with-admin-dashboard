@@ -30,6 +30,9 @@ export default function FoodManagerPage() {
     fiber: "",
   });
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingFood, setEditingFood] = useState<typeof newFood | null>(null);
+
   const fetchFoods = async () => {
     const res = await fetch("/api/foods");
     const data = await res.json();
@@ -66,6 +69,23 @@ export default function FoodManagerPage() {
 
   const handleDelete = async (id: string) => {
     await fetch(`/api/foods/${id}`, { method: "DELETE" });
+    fetchFoods();
+  };
+
+  const handleUpdate = async (id: string) => {
+    if (!editingFood) return;
+    await fetch(`/api/foods/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...editingFood,
+        protein: parseFloat(editingFood.protein),
+        carb: parseFloat(editingFood.carb),
+        fat: parseFloat(editingFood.fat),
+        fiber: parseFloat(editingFood.fiber),
+      }),
+    });
+    setEditingId(null);
     fetchFoods();
   };
 
@@ -183,19 +203,111 @@ export default function FoodManagerPage() {
             key={f.id}
             className="flex justify-between items-center border p-2 rounded"
           >
-            <div>
-              <p className="font-semibold">
-                {f.name} ({f.unit})
-              </p>
-              <p className="text-sm text-gray-600">
-                Nhóm: {f.group} | Pro: {f.protein}g, Card: {f.carb}g, Fat:{" "}
-                {f.fat}g, Xơ: {f.fiber}g
-              </p>
-            </div>
+            {editingId === f.id ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 flex-1">
+                <Input
+                  value={editingFood?.name}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, name: e.target.value })
+                  }
+                />
+                <select
+                  className="border rounded p-2"
+                  value={editingFood?.group}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, group: e.target.value })
+                  }
+                >
+                  {GROUPS.filter((g) => g !== "All").map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
+                <Input
+                  type="number"
+                  value={editingFood?.protein}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, protein: e.target.value })
+                  }
+                />
+                <Input
+                  type="number"
+                  value={editingFood?.carb}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, carb: e.target.value })
+                  }
+                />
+                <Input
+                  type="number"
+                  value={editingFood?.fat}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, fat: e.target.value })
+                  }
+                />
+                <Input
+                  type="number"
+                  value={editingFood?.fiber}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, fiber: e.target.value })
+                  }
+                />
+                <select
+                  className="border rounded p-2"
+                  value={editingFood?.unit}
+                  onChange={(e) =>
+                    setEditingFood({ ...editingFood!, unit: e.target.value })
+                  }
+                >
+                  <option value="100g">100g</option>
+                  <option value="1 phần ăn">1 phần ăn</option>
+                </select>
+              </div>
+            ) : (
+              <div>
+                <p className="font-semibold">
+                  {f.name} ({f.unit})
+                </p>
+                <p className="text-sm text-gray-600">
+                  Nhóm: {f.group} | Pro: {f.protein}g, Carb: {f.carb}g, Fat:{" "}
+                  {f.fat}g, Xơ: {f.fiber}g
+                </p>
+              </div>
+            )}
             <div className="flex gap-2">
-              <Button size="sm" variant="outline">
-                Sửa
-              </Button>
+              {editingId === f.id ? (
+                <>
+                  <Button size="sm" onClick={() => handleUpdate(f.id)}>
+                    Lưu
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditingId(null)}
+                  >
+                    Huỷ
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingId(f.id);
+                    setEditingFood({
+                      name: f.name,
+                      group: f.group,
+                      unit: f.unit,
+                      protein: f.protein,
+                      carb: f.carb,
+                      fat: f.fat,
+                      fiber: f.fiber,
+                    });
+                  }}
+                >
+                  Sửa
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant="destructive"
