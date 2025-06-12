@@ -42,6 +42,7 @@ type MealItem = {
 type Meal = {
   title: string;
   items: MealItem[];
+  note?: string;
 };
 
 type Props = {
@@ -52,7 +53,7 @@ type Props = {
 
 export default function MealCard({ meal, onUpdate, foodList }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [note, setNote] = useState<string>("");
+  const [note, setNote] = useState<string>(meal.note || "");
   const [showSelector, setShowSelector] = useState(false);
 
   const updateItem = (id: string, newItem: Partial<MealItem>) => {
@@ -210,9 +211,16 @@ export default function MealCard({ meal, onUpdate, foodList }: Props) {
         />
       )}
 
+      {/* Gợi ý chế biến nếu có */}
+      {meal.note && (
+        <div className="mt-4 text-sm italic text-gray-600">
+          Gợi ý chế biến: {meal.note}
+        </div>
+      )}
+
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Ghi chú / Gợi ý chế biến
+          Ghi chú / Gợi ý chế biến (thêm thủ công)
         </label>
         <textarea
           className="border rounded w-full p-2"

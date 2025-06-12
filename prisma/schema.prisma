@@ -30,8 +30,8 @@ model UserProfileHistory {
   id        String   @id @default(uuid())
   userId    String
   gender    String
-  weight    Int
-  height    Int
+  weight    Float
+  height    Float
   age       Int
   bodyfat   Float
   activity  Float

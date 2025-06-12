@@ -1,6 +1,8 @@
-// components/MealPlan.tsx
+"use client";
+
 import { useEffect, useState } from "react";
 import MealCard from "./MealCard";
+import { Button } from "@/components/ui/button";
 
 const fetchAllFoods = async (): Promise<Food[]> => {
   const res = await fetch("/api/foods");
@@ -28,6 +30,7 @@ type MealItem = {
 type Meal = {
   title: string;
   items: MealItem[];
+  note?: string;
 };
 
 type Props = {
@@ -43,6 +46,7 @@ export default function MealPlan({ target }: Props) {
   const [mealCount, setMealCount] = useState(3);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [foodList, setFoodList] = useState<Food[]>([]);
+  const [dietType, setDietType] = useState("Bình thường");
 
   useEffect(() => {
     fetchAllFoods().then(setFoodList);
@@ -78,11 +82,39 @@ export default function MealPlan({ target }: Props) {
 
   const total = getTotalMacro();
 
+  const generateMealplan = async () => {
+    if (!target) return;
+    const res = await fetch("/api/mealplan/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        target,
+        preferences: {
+          meals: mealCount,
+          diet: dietType,
+        },
+      }),
+    });
+    const aiMeals = await res.json();
+
+    const mappedMeals = aiMeals.map((m: any, idx: number) => ({
+      title: m.meal || `Bữa ${idx + 1}`,
+      note: m.note || "",
+      items: m.items.map((i: any) => ({
+        id: crypto.randomUUID(),
+        foodId: foodList.find((f) => f.name === i.food)?.id || "",
+        quantity: i.quantity,
+      })),
+    }));
+
+    setMeals(mappedMeals);
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="space-y-6">
-        <div className="mb-4">
-          <label className="font-semibold mr-2">Chọn số bữa ăn:</label>
+        <div className="mb-4 flex flex-wrap gap-4 items-center">
+          <label className="font-semibold">Chọn số bữa ăn:</label>
           <select
             value={mealCount}
             onChange={(e) => setMealCount(parseInt(e.target.value))}
@@ -94,6 +126,31 @@ export default function MealPlan({ target }: Props) {
               </option>
             ))}
           </select>
+
+          <label className="font-semibold">Chế độ ăn:</label>
+          <select
+            value={dietType}
+            onChange={(e) => setDietType(e.target.value)}
+            className="border p-1 rounded"
+          >
+            {[
+              "Bình thường",
+              "Ăn chay",
+              "Ít carb",
+              "Nhiều protein",
+              "Ketogenic",
+            ].map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+
+          {target && (
+            <Button onClick={generateMealplan} className="ml-auto">
+              Gợi ý thực đơn bằng AI
+            </Button>
+          )}
         </div>
 
         {meals.map((meal, idx) => (

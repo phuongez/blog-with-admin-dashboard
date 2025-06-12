@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useUser } from "@clerk/nextjs";
-import { parse } from "path";
 import {
   Table,
   TableBody,
@@ -70,7 +69,7 @@ export default function PersonalForm({
   const [proteinIntake, setProteinIntake] = useState(0);
   const [fatIntake, setFatIntake] = useState(0);
   const [carbIntake, setCarbIntake] = useState(0);
-  const caloriesIntake = proteinIntake * 4 + fatIntake * 9 + carbIntake * 4;
+  const [caloriesIntake, setCaloriesIntake] = useState(0);
 
   // Load last saved profile if exists
   useEffect(() => {
@@ -133,6 +132,7 @@ export default function PersonalForm({
     setProteinIntake(weight * proteinRatio);
     setFatIntake((calories * fatPercentage) / 9);
     setCarbIntake((calories - proteinIntake * 4 - fatIntake * 9) / 4);
+    setCaloriesIntake(calories);
 
     // Hiển thị kết quả tính toán
     setShowResult(true);
