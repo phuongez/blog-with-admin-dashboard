@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "../ui/table";
 import Image from "next/image";
+import { useNutritionStore } from "@/stores/useNutritionStore";
 
 // Types
 
@@ -29,8 +30,6 @@ type FormData = {
 };
 
 type Result = {
-  bmr: number;
-  tdee: number;
   calories: number;
   protein: number;
   fat: number;
@@ -43,7 +42,7 @@ export default function PersonalForm({
   onCalculate: (data: Result) => void;
 }) {
   const { user } = useUser();
-
+  const { setResult } = useNutritionStore();
   const [form, setForm] = useState<FormData>({
     gender: "male",
     weight: 60,
@@ -129,29 +128,44 @@ export default function PersonalForm({
     if (goal === "lose") calories *= 0.8;
     if (goal === "gain") calories *= 1.1;
 
-    setProteinIntake(weight * proteinRatio);
-    setFatIntake((calories * fatPercentage) / 9);
-    setCarbIntake((calories - proteinIntake * 4 - fatIntake * 9) / 4);
+    const calculatedProtein = weight * proteinRatio;
+    const calculatedFat = (calories * fatPercentage) / 9;
+    const calculatedCarb =
+      (calories - calculatedProtein * 4 - calculatedFat * 9) / 4;
+
+    setProteinIntake(calculatedProtein);
+    setFatIntake(calculatedFat);
+    setCarbIntake(calculatedCarb);
     setCaloriesIntake(calories);
 
-    // Hiển thị kết quả tính toán
-    setShowResult(true);
-
     onCalculate({
-      bmr: Math.round(bmr),
-      tdee: Math.round(averageTdee),
+      calories: Math.round(calories),
+      protein: Math.round(calculatedProtein),
+      fat: Math.round(calculatedFat),
+      carb: Math.round(calculatedCarb),
+    });
+
+    setResult({
       calories: Math.round(calories),
       protein: Math.round(proteinIntake),
       fat: Math.round(fatIntake),
       carb: Math.round(carbIntake),
     });
 
+    // Hiển thị kết quả tính toán
+    setShowResult(true);
+
     if (saveInfo && user?.id) {
-      await fetch("/api/user/save-history", {
+      const res = await fetch("/api/user/save-history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, ...form }),
       });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Không thể lưu dữ liệu.");
+      }
     }
   };
 

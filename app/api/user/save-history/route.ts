@@ -26,6 +26,25 @@ export async function POST(req: Request) {
       );
     }
 
+    const lastProfile = await prisma.userProfileHistory.findFirst({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (lastProfile) {
+      const now = new Date();
+      const diffDays =
+        (now.getTime() - new Date(lastProfile.createdAt).getTime()) /
+        (1000 * 60 * 60 * 24);
+
+      if (diffDays < 7) {
+        return NextResponse.json(
+          { error: "Bạn chỉ có thể lưu thông tin mới sau 7 ngày." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Tạo bản ghi lịch sử
     await prisma.userProfileHistory.create({
       data: {

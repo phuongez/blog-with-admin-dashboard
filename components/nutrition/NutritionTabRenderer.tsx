@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import PersonalForm from "./PersonalForm";
 import Mealplan from "./Mealplan";
 import FoodManagerPage from "./FoodManagerPage";
+import Tracking from "./Tracking";
+import { useNutritionStore } from "@/stores/useNutritionStore";
 
 export default function NutritionTabRenderer({ user }: any) {
   const [tab, setTab] = useState("calc");
-  const [result, setResult] = useState(null);
+
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -18,16 +20,18 @@ export default function NutritionTabRenderer({ user }: any) {
 
   const onCalculate = (data: any) => {
     console.log(data);
-    setResult(data);
+    // setResult(data);
   };
+
+  const result = useNutritionStore((state) => state.result);
 
   return (
     <div>
       {tab === "calc" && <PersonalForm onCalculate={onCalculate} />}
-      {tab === "mealplan" && <Mealplan target={result} />}
+      {tab === "mealplan" && <Mealplan target={result || undefined} />}
       {tab === "foodmanage" && <FoodManagerPage />}
-      {/* {tab === "tracking" && <Tracking />}
-      {tab === "nutritionGuide" && <NutritionGuide />} */}
+      {tab === "tracking" && <Tracking />}
+      {/* {tab === "nutritionGuide" && <NutritionGuide />} */}
     </div>
   );
 }
