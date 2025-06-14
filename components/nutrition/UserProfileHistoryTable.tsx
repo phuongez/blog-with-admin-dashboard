@@ -59,7 +59,9 @@ export default function UserProfileHistoryTable() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-xl font-semibold mb-2">Lịch sử hồ sơ đã lưu</h2>
+      <h2 className="text-lg md:text-xl font-semibold mb-2">
+        Lịch sử hồ sơ đã lưu
+      </h2>
       <Table>
         <TableHeader>
           <TableRow className="text-xs md:text-sm">
