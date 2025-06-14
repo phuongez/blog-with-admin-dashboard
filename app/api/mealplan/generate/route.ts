@@ -28,7 +28,15 @@ Bạn là chuyên gia dinh dưỡng thể hình. Dựa trên kiến thức chuy�
 
 Hãy lưu ý người dùng thường tập luyện vào lúc ${preferences.workoutHour} giờ.
 
-Chế độ ăn: ${diet}. Ưu tiên chất lượng thực phẩm cao (chậm tiêu hoá, nhiều chất xơ, ít đường nhanh). Mỗi bữa ăn nên có ít nhất 2–3 món, và:
+Chế độ ăn: ${diet}. Ưu tiên chất lượng thực phẩm cao (chậm tiêu hoá, nhiều chất xơ, ít đường nhanh). Ưu tiên chọn các thực phẩm thân thuộc với người Việt Nam. Mỗi bữa ăn nên có ít nhất 2–3 món, và:
+- Phù hợp với ngân sách người dùng: ${
+      preferences.budget === "low"
+        ? "tiết kiệm"
+        : preferences.budget === "high"
+        ? "thoải mái"
+        : "trung bình"
+    }
+  Ngân sách trung bình khoảng 70.000 VNĐ/ngày      
 - Phân phối protein đều giữa các bữa
 - Carb tập trung quanh thời gian tập luyện (bữa trước và sau tập nếu biết)
 - Fat nên ít trong bữa gần thời gian tập, cao hơn ở bữa xa thời gian tập (ví dụ bữa tối)
@@ -36,7 +44,7 @@ Chế độ ăn: ${diet}. Ưu tiên chất lượng thực phẩm cao (chậm ti
 
 Chỉ trả về JSON hợp lệ. Không thêm chú thích, markdown, hoặc văn bản ngoài JSON.
 
-Trả về JSON theo mẫu:
+Chỉ trả về JSON array định dạng như sau, không thêm chú thích hay văn bản khác:
 [
   {
     "meal": "Bữa sáng",
@@ -78,17 +86,8 @@ Trả về JSON theo mẫu:
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    // Parse JSON từ text trả về
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) {
-      return NextResponse.json(
-        { error: "Phản hồi AI không đúng định dạng JSON" },
-        { status: 500 }
-      );
-    }
-
     try {
-      const fixed = jsonrepair(jsonMatch[0]); // Tự động sửa lỗi thiếu dấu phẩy, thừa dấu
+      const fixed = jsonrepair(text); // Tự động sửa lỗi thiếu dấu phẩy, thừa dấu
       const mealPlan = JSON.parse(fixed);
       return NextResponse.json(mealPlan);
     } catch (e) {

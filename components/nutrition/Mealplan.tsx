@@ -49,6 +49,7 @@ export default function MealPlan({ target }: Props) {
 
   const { aiMeals, setAIMeals } = useMealplanStore();
   const [showAIMealplan, setShowAIMealplan] = useState(aiMeals.length > 0);
+  const [budget, setBudget] = useState<"low" | "medium" | "high">("medium");
 
   useEffect(() => {
     fetch("/api/foods")
@@ -96,6 +97,7 @@ export default function MealPlan({ target }: Props) {
           meals: mealCount,
           diet: dietType,
           workoutHour,
+          budget,
         },
       }),
     });
@@ -106,7 +108,7 @@ export default function MealPlan({ target }: Props) {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="flex flex-wrap gap-4 items-center mb-4">
+      <div className="flex flex-wrap gap-4 items-center mb-4 text-sm">
         <label className="font-semibold">Số bữa ăn:</label>
         <select
           value={mealCount}
@@ -127,8 +129,22 @@ export default function MealPlan({ target }: Props) {
           max={23}
           value={workoutHour}
           onChange={(e) => setWorkoutHour(parseInt(e.target.value))}
-          className="border p-1 rounded w-20"
+          className="border p-1 rounded w-fit"
         />
+
+        <label className="text-sm font-semibold">Ngân sách:</label>
+        <select
+          value={budget}
+          className="border px-2 py-1 rounded"
+          onChange={(e) =>
+            setBudget(e.target.value as "low" | "medium" | "high")
+          }
+        >
+          <option>Chọn ngân sách</option>
+          <option value="low">Dưới 70.000đ/ngày</option>
+          <option value="medium">70.000đ/ngày</option>
+          <option value="high">Thoải mái</option>
+        </select>
 
         <label className="font-semibold">Chế độ ăn:</label>
         <select
