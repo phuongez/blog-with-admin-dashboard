@@ -1,4 +1,3 @@
-// components/MealCard.tsx
 import { useState } from "react";
 import FoodSelector from "./FoodSelector";
 import {
@@ -56,6 +55,32 @@ export default function MealCard({ meal, onUpdate, foodList }: Props) {
   const [note, setNote] = useState<string>(meal.note || "");
   const [showSelector, setShowSelector] = useState(false);
 
+  const [group, setGroup] = useState("All");
+  const [search, setSearch] = useState("");
+  const [selectedFoodId, setSelectedFoodId] = useState("");
+  const [quantity, setQuantity] = useState(100);
+
+  const filteredFoods = foodList
+    .filter((f) => group === "All" || f.group === group)
+    .filter((f) => f.name.toLowerCase().includes(search.toLowerCase()));
+
+  const selectedFood = foodList.find((f) => f.id === selectedFoodId) || null;
+
+  const handleAdd = () => {
+    if (!selectedFood || quantity <= 0) return;
+
+    const newItem: MealItem = {
+      id: `${Date.now()}`,
+      foodId: selectedFood.id,
+      quantity,
+    };
+
+    onUpdate([...meal.items, newItem]);
+    setSelectedFoodId("");
+    setQuantity(100);
+    setShowSelector(false);
+  };
+
   const updateItem = (id: string, newItem: Partial<MealItem>) => {
     onUpdate(
       meal.items.map((item) =>
@@ -74,7 +99,7 @@ export default function MealCard({ meal, onUpdate, foodList }: Props) {
   };
 
   return (
-    <div className="border p-4 rounded-md bg-white shadow">
+    <div className="border p-4 rounded-md bg-white dark:bg-black shadow overflow-x-auto">
       <h2 className="text-xl font-bold mb-2">{meal.title}</h2>
       <Table>
         <TableHeader>
@@ -99,51 +124,49 @@ export default function MealCard({ meal, onUpdate, foodList }: Props) {
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
-                    <TableCell>
-                      <select
-                        value={food.group}
-                        onChange={(e) =>
-                          updateItem(item.id, {
-                            foodId:
-                              foodList.find((f) => f.group === e.target.value)
-                                ?.id || item.foodId,
-                          })
-                        }
-                        className="border p-1"
-                      >
-                        {FOOD_GROUPS.map((g) => (
-                          <option key={g} value={g}>
-                            {g}
-                          </option>
-                        ))}
-                      </select>
-                    </TableCell>
-                    <TableCell>
-                      <select
-                        value={item.foodId}
-                        onChange={(e) =>
-                          updateItem(item.id, { foodId: e.target.value })
-                        }
-                        className="border p-1"
-                      >
-                        {foodList.map((f) => (
-                          <option key={f.id} value={f.id}>
-                            {f.name}
-                          </option>
-                        ))}
-                      </select>
-                    </TableCell>
-                    <TableCell>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateItem(item.id, {
-                            quantity: parseInt(e.target.value),
-                          })
-                        }
-                        className="border p-1 w-20"
-                      />
+                    <TableCell colSpan={3}>
+                      <div className="flex flex-col gap-2">
+                        <select
+                          value={food.group}
+                          onChange={(e) =>
+                            updateItem(item.id, {
+                              foodId:
+                                foodList.find((f) => f.group === e.target.value)
+                                  ?.id || item.foodId,
+                            })
+                          }
+                          className="border p-1"
+                        >
+                          {FOOD_GROUPS.map((g) => (
+                            <option key={g} value={g}>
+                              {g}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={item.foodId}
+                          onChange={(e) =>
+                            updateItem(item.id, { foodId: e.target.value })
+                          }
+                          className="border p-1"
+                        >
+                          {foodList.map((f) => (
+                            <option key={f.id} value={f.id}>
+                              {f.name}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateItem(item.id, {
+                              quantity: parseInt(e.target.value),
+                            })
+                          }
+                          className="border p-1 w-20"
+                        />
+                      </div>
                     </TableCell>
                   </>
                 ) : (
@@ -201,17 +224,20 @@ export default function MealCard({ meal, onUpdate, foodList }: Props) {
       )}
       {showSelector && (
         <FoodSelector
-          index={0}
-          onAdd={(item) => {
-            if (item.quantity > 0) {
-              onUpdate([...meal.items, item]);
-            }
-            setShowSelector(false);
-          }}
+          filteredFoods={filteredFoods}
+          selectedFoodId={selectedFoodId}
+          setSelectedFoodId={setSelectedFoodId}
+          group={group}
+          setGroup={setGroup}
+          search={search}
+          setSearch={setSearch}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          selectedFood={selectedFood}
+          handleAdd={handleAdd}
         />
       )}
 
-      {/* Gợi ý chế biến nếu có */}
       {meal.note && (
         <div className="mt-4 text-sm italic text-gray-600">
           Gợi ý chế biến: {meal.note}

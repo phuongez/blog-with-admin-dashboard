@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import MealCard from "./MealCard";
 import { Button } from "@/components/ui/button";
 import { useMealplanStore } from "@/stores/useMealplanStore";
+import { Progress } from "@/components/ui/progress";
+import { BotMessageSquare, BrainCircuit, Wrench } from "lucide-react";
 
 type Food = {
   id: string;
@@ -146,17 +148,28 @@ export default function MealPlan({ target }: Props) {
             </option>
           ))}
         </select>
-
-        <Button onClick={generateMealplan} className="ml-auto">
-          Gợi ý thực đơn bằng AI
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => setShowAIMealplan(!showAIMealplan)}
-        >
-          {showAIMealplan ? "🔧 Sửa thủ công" : "🤖 Xem AI gợi ý"}
-        </Button>
+        {target && (
+          <div className="flex flex-wrap gap-4 justify-end items-center">
+            <Button onClick={generateMealplan}>Gợi ý thực đơn bằng AI</Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowAIMealplan(!showAIMealplan)}
+              className="flex items-center gap-2"
+            >
+              {showAIMealplan ? (
+                <>
+                  <Wrench className="w-4 h-4" />
+                  Sửa thủ công
+                </>
+              ) : (
+                <>
+                  <BotMessageSquare className="w-4 h-4" />
+                  Xem AI gợi ý
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* 🌟 Gợi ý AI */}
@@ -206,29 +219,61 @@ export default function MealPlan({ target }: Props) {
             />
           ))}
 
-          <div className="p-4 border rounded bg-gray-50">
-            <h3 className="font-semibold mb-1">Tổng dinh dưỡng</h3>
-            <p>Calories: {total.calories.toFixed(0)} kcal</p>
-            <p>Protein: {total.protein.toFixed(1)} g</p>
-            <p>Carb: {total.carb.toFixed(1)} g</p>
-            <p>Fat: {total.fat.toFixed(1)} g</p>
-          </div>
+          {target ? (
+            <div className="p-4 border rounded bg-gray-100 dark:bg-gray-900 mt-4 space-y-4">
+              <h3 className="font-semibold">So sánh với mục tiêu</h3>
 
-          {target && (
-            <div className="p-4 border rounded bg-gray-100 mt-4">
-              <h3 className="font-semibold mb-1">So sánh với mục tiêu</h3>
-              <p>
-                Calories: {total.calories.toFixed(0)} / {target.calories} kcal
-              </p>
-              <p>
-                Protein: {total.protein.toFixed(1)} / {target.protein} g
-              </p>
-              <p>
-                Carb: {total.carb.toFixed(1)} / {target.carb} g
-              </p>
-              <p>
-                Fat: {total.fat.toFixed(1)} / {target.fat} g
-              </p>
+              {/* Calories */}
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Calories</span>
+                  <span>
+                    {total.calories.toFixed(0)} / {target.calories} kcal
+                  </span>
+                </div>
+                <Progress value={(total.calories / target.calories) * 100} />
+              </div>
+
+              {/* Protein */}
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Protein</span>
+                  <span>
+                    {total.protein.toFixed(1)} / {target.protein} g
+                  </span>
+                </div>
+                <Progress value={(total.protein / target.protein) * 100} />
+              </div>
+
+              {/* Carb */}
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Carb</span>
+                  <span>
+                    {total.carb.toFixed(1)} / {target.carb} g
+                  </span>
+                </div>
+                <Progress value={(total.carb / target.carb) * 100} />
+              </div>
+
+              {/* Fat */}
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Fat</span>
+                  <span>
+                    {total.fat.toFixed(1)} / {target.fat} g
+                  </span>
+                </div>
+                <Progress value={(total.fat / target.fat) * 100} />
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 border rounded bg-gray-50 dark:bg-gray-900">
+              <h3 className="font-semibold mb-1">Tổng dinh dưỡng</h3>
+              <p>Calories: {total.calories.toFixed(0)} kcal</p>
+              <p>Protein: {total.protein.toFixed(1)} g</p>
+              <p>Carb: {total.carb.toFixed(1)} g</p>
+              <p>Fat: {total.fat.toFixed(1)} g</p>
             </div>
           )}
         </>

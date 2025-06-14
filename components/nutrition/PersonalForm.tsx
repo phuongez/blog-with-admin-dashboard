@@ -147,9 +147,9 @@ export default function PersonalForm({
 
     setResult({
       calories: Math.round(calories),
-      protein: Math.round(proteinIntake),
-      fat: Math.round(fatIntake),
-      carb: Math.round(carbIntake),
+      protein: Math.round(calculatedProtein),
+      fat: Math.round(calculatedFat),
+      carb: Math.round(calculatedCarb),
     });
 
     // Hiển thị kết quả tính toán

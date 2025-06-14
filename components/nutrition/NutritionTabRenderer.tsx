@@ -19,11 +19,12 @@ export default function NutritionTabRenderer({ user }: any) {
   }, [searchParams]);
 
   const onCalculate = (data: any) => {
-    console.log(data);
+    // console.log(data);
     // setResult(data);
   };
 
   const result = useNutritionStore((state) => state.result);
+  console.log(result);
 
   return (
     <div>

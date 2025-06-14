@@ -14,8 +14,8 @@ import { useUser } from "@clerk/nextjs";
 const NutritionNavbar = () => {
   const { user } = useUser();
   return (
-    <div className="w-full px-4 border-b flex justify-center">
-      <nav className="flex items-center overflow-x-scroll">
+    <div className="w-full border-b px-4 flex justify-center items-center">
+      <nav className="flex items-center overflow-x-auto py-0 h-[40px]">
         <Link href={"/nutrition"}>
           <Button
             variant="ghost"
