@@ -3,6 +3,7 @@ import BlogFooter from "@/components/home/blog-footer";
 import SearchInput from "@/components/home/header/search-input";
 import RightMenu from "@/components/home/RightMenu";
 import { TopArticles } from "@/components/home/top-articles";
+import MealToolCTA from "@/components/MealToolCTA";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { Suspense } from "react";
@@ -27,13 +28,14 @@ const page = async () => {
             <TopArticles />
           </Suspense>
 
-          <div className="mt-12 text-center">
+          <div className="mt-12 text-center mb-12">
             <Link href={"/articles"}>
               <Button className="rounded-md px-8 py-6 text-lg">
                 Xem Tất Cả Bài Viết
               </Button>
             </Link>
           </div>
+          <MealToolCTA />
         </div>
         <div className="w-[35%] hidden lg:block">
           <RightMenu />

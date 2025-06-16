@@ -48,8 +48,8 @@ export async function TopArticles() {
           key={article.id}
           className={cn(
             "group relative overflow-hidden transition-all hover:scale-[1.02]",
-            "border border-gray-200/50 dark:border-white/10",
-            "bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg"
+            "border border-gray dark:border-white/10",
+            "bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg shadow-none"
           )}
         >
           {article.isPaid && (

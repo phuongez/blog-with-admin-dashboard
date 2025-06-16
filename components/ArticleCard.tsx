@@ -23,7 +23,7 @@ const ArticleCard = ({ article }: any) => {
     return minutes;
   }
   return (
-    <Card className="group relative overflow-hidden transition-all hover:shadow-lg">
+    <Card className="group relative overflow-hidden transition-all shadow-none hover:shadow-lg">
       {article.isPaid && (
         <div className="absolute top-4 right-4 bg-yellow-400 text-white text-xs font-semibold px-2 py-1 rounded z-10">
           Trả phí
@@ -46,7 +46,7 @@ const ArticleCard = ({ article }: any) => {
 
         {/* Article Title */}
         <Link href={`/articles/${article.slug}`} className="block">
-          <h1 className="text-xl font-semibold text-foreground mb-2 hover:underline">
+          <h1 className="text-xl font-semibold text-foreground mb-2 hover:text-primary">
             {article.title}
           </h1>
         </Link>
@@ -77,7 +77,7 @@ const ArticleCard = ({ article }: any) => {
               <AvatarFallback>{article.author.name}</AvatarFallback>
             </Avatar>
             <Link href={`/authors/${article.author.id}`}>
-              <span className="text-sm text-muted-foreground hover:underline">
+              <span className="text-sm text-muted-foreground hover:text-primary">
                 {article.author.name}
               </span>
             </Link>
