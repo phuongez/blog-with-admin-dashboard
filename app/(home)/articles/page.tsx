@@ -5,6 +5,7 @@ import React, { Suspense } from "react";
 import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
 import AllArticlesPageSkeleton from "@/components/articles/AllArticlesPageSkeleton";
+import CategoriesTabs from "@/components/articles/CategoriesTabs";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -26,7 +27,8 @@ export default async function Page({ searchParams }: { searchParams?: any }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <main className="container mx-auto px-4 pb-12 sm:px-6 lg:px-8">
+        <CategoriesTabs />
         {/* Page Header */}
         <div className="mb-12 space-y-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">

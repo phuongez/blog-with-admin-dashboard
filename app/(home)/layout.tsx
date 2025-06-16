@@ -1,3 +1,4 @@
+import BlogFooter from "@/components/home/blog-footer";
 import { Navbar } from "@/components/home/header/navbar";
 import { prisma } from "@/lib/prisma";
 import { syncUserRoleToClerk } from "@/lib/utils";
@@ -30,6 +31,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
     <div>
       <Navbar />
       {children}
+      <BlogFooter />
     </div>
   );
 };
