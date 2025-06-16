@@ -63,13 +63,10 @@ export default function UserProfileChart() {
     return <p className="text-center">Đang tải dữ liệu...</p>;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Biến động cân nặng & tỷ lệ mỡ</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card className="p-0 md:p-4 m-6 mt-12 border-none shadow-none">
+      <CardContent className="p-0 md:p-6">
         <div className="w-full overflow-x-auto">
-          <div style={{ minWidth: 500 }}>
+          <div style={{ minWidth: 300 }}>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -122,7 +119,7 @@ export default function UserProfileChart() {
                   yAxisId="right"
                   type="monotone"
                   dataKey="bodyfat"
-                  stroke="#82ca9d"
+                  stroke="#f5a72a"
                   name="Tỷ lệ mỡ (%)"
                 />
               </LineChart>

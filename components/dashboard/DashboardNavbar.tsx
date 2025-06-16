@@ -6,7 +6,7 @@ import Link from "next/link";
 const DashboardNavbar = () => {
   return (
     <div className="w-full px-4 border-b flex justify-center">
-      <nav className="flex items-center overflow-x-scroll">
+      <nav className="flex items-center overflow-x-auto py-0 h-[40px]">
         <Link href={"/dashboard"}>
           <Button
             variant="ghost"

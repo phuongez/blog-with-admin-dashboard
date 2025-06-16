@@ -11,7 +11,9 @@ export async function GET(req: Request) {
   // Lấy user có role là AUTHOR
   const authors = await prisma.user.findMany({
     where: {
-      role: "AUTHOR",
+      role: {
+        in: ["AUTHOR", "ADMIN"],
+      },
     },
     orderBy: { createdAt: "desc" },
     skip,
@@ -19,7 +21,7 @@ export async function GET(req: Request) {
     include: {
       articles: {
         orderBy: { createdAt: "desc" },
-        take: 3, // 3 bài viết nổi bật
+        take: 5, // 3 bài viết nổi bật
         include: {
           author: {
             select: {

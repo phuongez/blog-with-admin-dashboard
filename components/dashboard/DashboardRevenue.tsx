@@ -90,10 +90,22 @@ export default function DashboardRevenue() {
                 margin={{ top: 40, right: 20, left: 10, bottom: 50 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="authorName" angle={-20} textAnchor="end" />
-                <YAxis />
+                <XAxis
+                  dataKey="authorName"
+                  angle={-20}
+                  textAnchor="end"
+                  tick={{ fontSize: 12 }}
+                  label={{ fontSize: 12 }}
+                />
+                <YAxis tick={{ fontSize: 12 }} label={{ fontSize: 12 }} />
                 <Tooltip />
-                <Bar dataKey="totalRevenue" fill="#8884d8" name="Doanh thu" />
+                <Bar
+                  dataKey="totalRevenue"
+                  fill="#8884d8"
+                  name="Doanh thu"
+                  barSize={40}
+                  minPointSize={5}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

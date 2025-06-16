@@ -34,7 +34,7 @@ const ArticleCard = ({ article }: any) => {
         <div className="block w-[65%]">
           {/* Image Container */}
           <Link href={`/articles/${article.slug}`}>
-            <div className="relative mb-4 w-full h-24 overflow-hidden ">
+            <div className="relative mb-4 w-full h-20 overflow-hidden ">
               <Image
                 src={article.featuredImage as string}
                 alt={article.title}
@@ -47,13 +47,13 @@ const ArticleCard = ({ article }: any) => {
         </div>
         {/* Category & Read time */}
         <div className="flex flex-col items-center gap-2">
-          <p className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+          <p className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
             {slugToCategory(article.category)}
           </p>
-          <p className="text-primary text-sm">
+          <p className="text-primary text-xs">
             {getReadingTime(article.content)} phút đọc
           </p>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs text-muted-foreground">
             {new Date(article.createdAt).toLocaleDateString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
@@ -66,7 +66,7 @@ const ArticleCard = ({ article }: any) => {
       {/* Article Title */}
       <div className="">
         <Link href={`/articles/${article.slug}`} className="block">
-          <h1 className="text-base md:text-lg font-semibold text-foreground hover:underline">
+          <h1 className="text-sm md:text-base font-semibold text-foreground hover:underline">
             {article.title}
           </h1>
         </Link>

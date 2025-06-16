@@ -110,7 +110,7 @@ export default function AuthorPage() {
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-8">
       {/* Author Info */}
       <div className="mb-8 p-4">
         <div className="flex justify-between items-center gap-4">
@@ -194,10 +194,7 @@ export default function AuthorPage() {
       <div className="flex gap-2 mb-6 overflow-x-auto">
         {CATEGORIES.map((cat) => (
           <Link key={cat.value} href={`?category=${cat.value}&page=1`} passHref>
-            <Button
-              variant={category === cat.value ? "default" : "ghost"}
-              size="sm"
-            >
+            <Button variant={category === cat.value ? "default" : "ghost"}>
               {cat.label}
             </Button>
           </Link>
@@ -205,7 +202,7 @@ export default function AuthorPage() {
       </div>
 
       {/* Articles */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
         {loading ? (
           <p className="text-center col-span-2">Đang tải bài viết...</p>
         ) : articles.length === 0 ? (

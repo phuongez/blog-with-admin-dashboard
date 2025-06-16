@@ -50,7 +50,7 @@ const ArticleCard = ({ article }: any) => {
             {article.title}
           </h1>
         </Link>
-        <h2 className="relative mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-2">
+        <h2 className="relative mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-2">
           {article.subtitle}
           <Link href={`/articles/${article.slug}`}>
             <span className="font-bold pl-2 mb-0 text-sm sm:text-base text-primary">

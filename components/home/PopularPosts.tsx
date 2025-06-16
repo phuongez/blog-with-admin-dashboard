@@ -31,7 +31,7 @@ const MenuPost = async () => {
 
   return (
     <div className={styles.items}>
-      {sortedArticles.slice(0, 4).map((article) => (
+      {sortedArticles.slice(0, 5).map((article) => (
         <Link
           key={article.id}
           className={styles.item}

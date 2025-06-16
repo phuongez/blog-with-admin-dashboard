@@ -92,6 +92,15 @@ article h1 strong {
 
 /* Tiptap editor */
 
+/* Scroll bar */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
 @layer base {
   * {
     @apply border-border;

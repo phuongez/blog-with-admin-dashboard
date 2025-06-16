@@ -109,7 +109,7 @@ export default function MealPlan({ target }: Props) {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex flex-wrap gap-4 items-center mb-4 text-sm">
-        <label className="font-semibold">Số bữa ăn:</label>
+        <label className="font-semibold">Số bữa:</label>
         <select
           value={mealCount}
           onChange={(e) => setMealCount(parseInt(e.target.value))}
@@ -135,13 +135,13 @@ export default function MealPlan({ target }: Props) {
         <label className="text-sm font-semibold">Ngân sách:</label>
         <select
           value={budget}
-          className="border px-2 py-1 rounded"
+          className="border px-2 py-1 rounded w-fit"
           onChange={(e) =>
             setBudget(e.target.value as "low" | "medium" | "high")
           }
         >
           <option>Chọn ngân sách</option>
-          <option value="low">Dưới 70.000đ/ngày</option>
+          <option value="low">Thấp</option>
           <option value="medium">70.000đ/ngày</option>
           <option value="high">Thoải mái</option>
         </select>
@@ -156,7 +156,9 @@ export default function MealPlan({ target }: Props) {
             "Bình thường",
             "Ăn chay",
             "Ít carb",
-            "Nhiều protein",
+            "Tiền tiểu đường",
+            "Cao huyết áp",
+            "Buồng trứng đa nang",
             "Ketogenic",
           ].map((opt) => (
             <option key={opt} value={opt}>
