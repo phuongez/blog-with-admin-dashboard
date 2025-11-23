@@ -1,7 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { FileText, LayoutDashboard, MessageCircle } from "lucide-react";
+import {
+  FileText,
+  LayoutDashboard,
+  MessageCircle,
+  BanknoteArrowDown,
+  Users,
+  CircleUserRound,
+} from "lucide-react";
 import Link from "next/link";
 const DashboardNavbar = () => {
   return (
@@ -22,7 +29,7 @@ const DashboardNavbar = () => {
             variant="ghost"
             className="rounded-none focus:border-b-2 focus:border-black"
           >
-            <FileText className="hidden md:inline-block mr-2 h-4 w-4" />
+            <BanknoteArrowDown className="hidden md:inline-block mr-2 h-4 w-4" />
             Doanh số
           </Button>
         </Link>
@@ -40,7 +47,7 @@ const DashboardNavbar = () => {
             variant="ghost"
             className="rounded-none focus:border-b-2 focus:border-black"
           >
-            <FileText className="hidden md:inline-block mr-2 h-4 w-4" />
+            <Users className="hidden md:inline-block mr-2 h-4 w-4" />
             Người dùng
           </Button>
         </Link>
@@ -58,7 +65,7 @@ const DashboardNavbar = () => {
             variant="ghost"
             className="rounded-none focus:border-b-2 focus:border-black"
           >
-            <MessageCircle className="hidden md:inline-block mr-2 h-4 w-4" />
+            <CircleUserRound className="hidden md:inline-block mr-2 h-4 w-4" />
             Tài khoản
           </Button>
         </Link>
