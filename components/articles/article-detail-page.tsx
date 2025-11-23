@@ -13,6 +13,7 @@ import { auth } from "@clerk/nextjs/server";
 import TableOfContents from "../TableOfContents";
 import * as cheerio from "cheerio";
 import Image from "next/image";
+import Link from "next/link";
 
 export type ArticleDetailPageProps = {
   article: Prisma.ArticlesGetPayload<{
@@ -22,6 +23,7 @@ export type ArticleDetailPageProps = {
           name: true;
           email: true;
           imageUrl: true;
+          id: true;
         };
       };
     };
@@ -55,6 +57,7 @@ export async function ArticleDetailPage({
           name: true,
           email: true,
           imageUrl: true,
+          id: true,
         },
       },
     },
@@ -134,9 +137,11 @@ export async function ArticleDetailPage({
                 <AvatarFallback>{article.id}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium text-foreground">
-                  {article.author.name}
-                </p>
+                <Link href={`/authors/${article.author.id}`}>
+                  <span className="text-sm text-muted-foreground hover:text-primary">
+                    {article.author.name}
+                  </span>
+                </Link>
                 <p className="text-sm">
                   {new Date(article.createdAt).toLocaleString("vi-VN", {
                     day: "2-digit",
