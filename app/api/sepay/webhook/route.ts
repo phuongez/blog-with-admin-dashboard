@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Tìm và tách articleId + userId
-    const match = content.match(/BLOGAXC([a-z0-9]+)UXC([a-z0-9]+)/i);
+    const match = content.match(/BLOGAXC([a-z0-9]+)UXC\s*([a-z0-9]+)/i);
     if (!match) {
       return NextResponse.json({
         success: false,
