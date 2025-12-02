@@ -102,7 +102,7 @@ export default function FoodSelector({
         </Select>
 
         {/* Lượng */}
-        <div className="relative w-[80px]">
+        <div className="relative w-[110px]">
           <Input
             type="number"
             min={0}
